@@ -6,7 +6,7 @@
 /****************************************
  * CONSTRUCTORES
 ****************************************/
-Nodo::Nodo(char *dato_, int fila_, int columna_, int nivel_)
+NodoMatriz::NodoMatriz(char *dato_, int fila_, int columna_, int nivel_)
 {
     dato = new char[sizeof(dato)];
     strcpy(dato, dato_);
@@ -41,7 +41,7 @@ Matriz::Matriz()
 /****************************************
  * DESTRUCTORES
 ****************************************/
-Nodo::~Nodo()
+NodoMatriz::~NodoMatriz()
 {
     delete[] (dato);
     izquierda = NULL;
@@ -137,7 +137,7 @@ Encabezado *ListaEncabezado::getEncabezado(int indice)
 void Matriz::insertar(char *dato, int fila, int columna, int nivel)
 {
     // CREAR NUEVO NODO
-    Nodo *nuevo = new Nodo(dato, fila, columna, nivel);
+    NodoMatriz *nuevo = new NodoMatriz(dato, fila, columna, nivel);
 
     // FILA
     Encabezado *row = filas->getEncabezado(fila);
@@ -161,7 +161,7 @@ void Matriz::insertar(char *dato, int fila, int columna, int nivel)
         }
         else
         {
-            Nodo *actual = row->apunta;
+            NodoMatriz *actual = row->apunta;
 
             while (actual->derecha != NULL)
             {
@@ -207,7 +207,7 @@ void Matriz::insertar(char *dato, int fila, int columna, int nivel)
         }
         else
         {
-            Nodo *actual = column->apunta;
+            NodoMatriz *actual = column->apunta;
 
             while (actual->abajo != NULL)
             {
@@ -267,7 +267,7 @@ void Matriz::graficarFilas()
     Encabezado *row = filas->primero;
     while (row != NULL)
     {
-        Nodo *actual = row->apunta;
+        NodoMatriz *actual = row->apunta;
         char nodo[10];
 
         while (actual != NULL)
@@ -309,7 +309,7 @@ void Matriz::graficarColumnas()
     Encabezado *column = columnas->primero;
     while (column != NULL)
     {
-        Nodo *actual = column->apunta;
+        NodoMatriz *actual = column->apunta;
         char nodo[10];
 
         while (actual != NULL)
@@ -334,4 +334,17 @@ void Matriz::graficarColumnas()
     escribir("columnas.dot", "NULL;\n}", "a");
 
     system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
+}
+
+void Matriz::graficar()
+{
+    char dot[256];
+
+    strcpy(dot, "digraph matriz\n{\n");
+    strcat(dot, "\tnode[shape=box, style=filled, color=Gray95];\n");
+    strcat(dot, "\tedge[color=black];\n");
+    strcat(dot, "\trankdir=UD;\n");
+
+    escribir("matriz.dot", dot, "w");
+    strcpy(dot, "");
 }

@@ -1,3 +1,7 @@
+#include <QTextStream>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 #include "principal.h"
 #include "ui_principal.h"
 
@@ -6,6 +10,7 @@ Principal::Principal(QWidget *parent) :
     ui(new Ui::Principal)
 {
     matriz = new Matriz();
+    arbol = new ABB();
     ui->setupUi(this);
     //insertarMatriz();
 }
@@ -17,58 +22,55 @@ Principal::~Principal()
 
 QString Principal::lectura(QString filename)
 {
-    /*
     QFile file(filename);
 
     if (!file.open(QFile::ReadOnly | QFile::Text))
         return NULL;
     else
     {
-        QTextStream in (&file);
+        QTextStream in(&file);
         QString texto = in.readAll();
 
         file.close();
 
         return texto;
     }
-    */
 }
 
 void Principal::separar(char* texto)
 {
-    /*
     bool fin = false;
 
-    char *artista;
-    char *album;
-    char *cancion;
-    char *path;
-    float valoracion;
+    char *usuario;
+    int victorias;
+    int derrotas;
+    /**********************************
+     * INSERTAR PRIMERA FILA
+    **********************************/
+    usuario = strtok(texto, "_\n");
+    victorias = atoi(strtok(NULL, "_\n"));
+    derrotas = atoi(strtok(NULL, "_\n"));
 
-    artista = strtok(texto, "_\n");
-    album = strtok(NULL, "_\n");
-    cancion = strtok(NULL, "_\n");
-    path = strtok(NULL, "_\n");
-    valoracion = atof(strtok(NULL, "_\n"));
+    arbol->insertar(usuario, victorias, derrotas);
 
-    lista->add(artista, album, cancion, path, valoracion);
+    /**********************************
+     * INSERTAR FILA SIGUIENTES
+    **********************************/
+
     while (!fin)
     {
-        artista = strtok(NULL, "_\n");
+        usuario = strtok(NULL, "_\n");
 
-        if (strcmp(artista, "#") != 0)
+        if (strcmp(usuario, "#") != 0)
         {
-            album = strtok(NULL, "_\n");
-            cancion = strtok(NULL, "_\n");
-            path = strtok(NULL, "_\n");
-            valoracion = atof(strtok(NULL, "_\n"));
+            victorias = atoi(strtok(NULL, "_\n"));
+            derrotas = atoi(strtok(NULL, "_\n"));
 
-            lista->add(artista, album, cancion, path, valoracion);
+            arbol->insertar(usuario, victorias, derrotas);
         }
         else
             fin = true;
     }
-    */
 }
 
 void Principal::insertarMatriz()
@@ -85,6 +87,17 @@ void Principal::insertarMatriz()
 
 void Principal::on_actionAbrir_triggered()
 {
+    /*
+    arbol->insertar("Sakamoto", 10, 0);
+    arbol->insertar("Neji", 8, 2);
+    arbol->insertar("Yamada", 5, 5);
+    arbol->insertar("Mikasa", 8, 2);
+    arbol->insertar("Kosuda", 2, 8);
+    arbol->insertar("Eren", 4, 6);
+    arbol->insertar("Asuna", 7, 3);
+    arbol->insertar("Kirito", 9, 1);
+    */
+
     QString filename = QFileDialog::getOpenFileName(
                 this,
                 "Selector de archivo",
@@ -105,4 +118,9 @@ void Principal::on_actionLinealizar_por_Filas_triggered()
 void Principal::on_actionLinealizar_por_Columnas_triggered()
 {
     matriz->graficarColumnas();
+}
+
+void Principal::on_actionGraficar_triggered()
+{
+    arbol->graficar();
 }

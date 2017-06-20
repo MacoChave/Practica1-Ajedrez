@@ -41,8 +41,14 @@
      <addaction name="actionLinealizar_por_Columnas"/>
      <addaction name="actionGraficar_Matriz"/>
     </widget>
+    <widget class="QMenu" name="menuArbol">
+     <property name="title">
+      <string>Arbol</string>
+     </property>
+     <addaction name="actionGraficar"/>
+    </widget>
     <addaction name="menuMatriz"/>
-    <addaction name="actionArbol"/>
+    <addaction name="menuArbol"/>
    </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuEstructura"/>
@@ -61,11 +67,6 @@
     <string>Abrir</string>
    </property>
   </action>
-  <action name="actionArbol">
-   <property name="text">
-    <string>Arbol</string>
-   </property>
-  </action>
   <action name="actionLinealizar_por_Filas">
    <property name="text">
     <string>Linealizar por Filas</string>
@@ -79,6 +80,11 @@
   <action name="actionGraficar_Matriz">
    <property name="text">
     <string>Graficar Matriz</string>
+   </property>
+  </action>
+  <action name="actionGraficar">
+   <property name="text">
+    <string>Graficar</string>
    </property>
   </action>
  </widget>

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include "matriz.h"
+#include "abb.h"
 
 namespace Ui {
 class Principal;
@@ -18,6 +19,7 @@ public:
     explicit Principal(QWidget *parent = 0);
     ~Principal();
     Matriz *matriz;
+    ABB *arbol;
 
 private slots:
     void on_actionAbrir_triggered();
@@ -25,6 +27,8 @@ private slots:
     void on_actionLinealizar_por_Filas_triggered();
 
     void on_actionLinealizar_por_Columnas_triggered();
+
+    void on_actionGraficar_triggered();
 
 private:
     Ui::Principal *ui;

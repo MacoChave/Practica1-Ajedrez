@@ -1,20 +1,20 @@
 #ifndef MATRIZ_H
 #define MATRIZ_H
 
-class Nodo
+class NodoMatriz
 {
 public:
-    Nodo(char *dato_, int fila_, int columna_, int nivel_);
-    ~Nodo();
+    NodoMatriz(char *dato_, int fila_, int columna_, int nivel_);
+    ~NodoMatriz();
 
     char* dato;
     int fila;
     int columna;
     int nivel;
-    Nodo *izquierda;
-    Nodo *derecha;
-    Nodo *arriba;
-    Nodo *abajo;
+    NodoMatriz *izquierda;
+    NodoMatriz *derecha;
+    NodoMatriz *arriba;
+    NodoMatriz *abajo;
 };
 
 class Encabezado
@@ -26,7 +26,7 @@ public:
     int indice;
     Encabezado *siguiente;
     Encabezado *anterior;
-    Nodo *apunta;
+    NodoMatriz *apunta;
 };
 
 class ListaEncabezado
@@ -52,6 +52,7 @@ public:
     void insertar(char *dato, int fila, int columna, int nivel);
     void graficarFilas();
     void graficarColumnas();
+    void graficar();
 };
 
 #endif // MATRIZ_H
