@@ -7,7 +7,7 @@ Principal::Principal(QWidget *parent) :
 {
     matriz = new Matriz();
     ui->setupUi(this);
-    insertarMatriz();
+    //insertarMatriz();
 }
 
 Principal::~Principal()
