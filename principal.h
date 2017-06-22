@@ -30,6 +30,8 @@ private slots:
 
     void on_actionGraficar_triggered();
 
+    void on_actionGraficar_Matriz_triggered();
+
 private:
     Ui::Principal *ui;
     QString lectura(QString filename);

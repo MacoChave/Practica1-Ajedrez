@@ -252,7 +252,7 @@ void Matriz::escribir(char filename[], char texto[], char *modo)
     }
 }
 
-void Matriz::graficarFilas()
+void Matriz::linealizarFila()
 {
     char dot[256];
 
@@ -294,7 +294,7 @@ void Matriz::graficarFilas()
     system("dot -Tpng /home/marco/Escritorio/filas.dot -o /home/marco/Escritorio/filas.png");
 }
 
-void Matriz::graficarColumnas()
+void Matriz::linealizarColumna()
 {
     char dot[256];
 
@@ -321,8 +321,11 @@ void Matriz::graficarColumnas()
             strcat(dot, "[label=\"");
             strcat(dot, actual->dato);
             strcat(dot, "\"];\n");
-            strcat(dot, nodo);
-            strcat(dot, " -> ");
+            if (actual->abajo != NULL)
+            {
+                strcat(dot, nodo);
+                strcat(dot, " -> ");
+            }
 
             actual = actual->abajo;
             strcpy(nodo, "");
@@ -331,20 +334,199 @@ void Matriz::graficarColumnas()
         }
         column = column->siguiente;
     }
-    escribir("columnas.dot", "NULL;\n}", "a");
 
     system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
 }
 
-void Matriz::graficar()
+void Matriz::rank()
+{
+    char dot[128];
+    char nodo[10];
+
+    /* { rank=same; cabecera } */
+    strcpy(dot, "\n\t{ rank=same; MATRIZ -> ");
+    Encabezado *encabezado = columnas->primero;
+    while (encabezado != NULL)
+    {
+        sprintf(nodo, "C%d; ", encabezado->indice);
+        strcat(dot, nodo);
+
+        encabezado = encabezado->siguiente;
+    }
+    strcat(dot, "};");
+    escribir("matriz.dot", dot, "a");
+
+    /* { rank=same; fila -> lista nodo } */
+    encabezado = filas->primero;
+    while (encabezado != NULL)
+    {
+        NodoMatriz *actual = encabezado->apunta;
+        strcpy(dot, "\t{ rank=same; ");
+        sprintf(nodo, "F%d; ", encabezado->indice);
+        strcat(dot, nodo);
+        escribir("matriz.dot", dot, "a");
+
+        while (actual != NULL)
+        {
+            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            strcpy(dot, nodo);
+            strcat(dot, "; ");
+
+            actual = actual->derecha;
+
+            escribir("matriz.dot", dot, "a");
+        }
+
+        strcpy(dot, "};\n");
+        escribir("matriz.dot", dot, "a");
+        encabezado = encabezado->siguiente;
+    }
+}
+
+void Matriz::graficarColumnas(int nivel)
 {
     char dot[256];
+    char nodo[10];
+
+    Encabezado *column = columnas->primero;
+    while (column != NULL)
+    {
+        NodoMatriz *actual = column->apunta;
+
+        strcpy(dot, "\n\t");
+        sprintf(nodo, "C%d", column->indice);
+        strcat(dot, nodo);
+        strcat(dot, "[label=\"");
+        sprintf(nodo, "%d", column->indice);
+        strcat(dot, nodo);
+        strcat(dot, "\"];\n");
+        strcat(dot, "\t");
+        sprintf(nodo, "C%d", column->indice);
+        strcat(dot, nodo);
+        strcat(dot, " -> ");
+        escribir("matriz.dot", dot, "a");
+
+        while (actual != NULL)
+        {
+            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            strcpy(dot, nodo);
+            strcat(dot, ";\n\t");
+            strcat(dot, nodo);
+            strcat(dot, "[label=\"");
+            strcat(dot, actual->dato);
+            strcat(dot, "\"];\n");
+            if (actual->abajo != NULL)
+            {
+                strcat(dot, "\t");
+                strcat(dot, nodo);
+                strcat(dot, " -> ");
+            }
+
+            actual = actual->abajo;
+            strcpy(nodo, "");
+
+            escribir("matriz.dot", dot, "a");
+        }
+        column = column->siguiente;
+    }
+}
+
+void Matriz::graficarFilas(int nivel)
+{
+    char dot[256];
+    char nodo[10];
+
+    Encabezado *row = filas->primero;
+    while (row != NULL)
+    {
+        NodoMatriz *actual = row->apunta;
+
+        strcpy(dot, "\n\t");
+        sprintf(nodo, "F%d", row->indice);
+        strcat(dot, nodo);
+        strcat(dot, "[label=\"");
+        sprintf(nodo, "%d", row->indice);
+        strcat(dot, nodo);
+        strcat(dot, "\"];\n");
+        strcat(dot, "\t");
+        sprintf(nodo, "F%d", row->indice);
+        strcat(dot, nodo);
+        strcat(dot, " -> ");
+        escribir("matriz.dot", dot, "a");
+
+        while (actual != NULL)
+        {
+            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            strcpy(dot, nodo);
+            strcat(dot, ";\n");
+
+            if (actual->derecha != NULL)
+            {
+                strcat(dot, "\t");
+                strcat(dot, nodo);
+                strcat(dot, " -> ");
+            }
+
+            actual = actual->derecha;
+            strcpy(nodo, "");
+
+            escribir("matriz.dot", dot, "a");
+        }
+        row = row->siguiente;
+    }
+}
+
+void Matriz::graficar(int nivel)
+{
+    char dot[128];
+    char nodo[5];
+    Encabezado *encabezado;
 
     strcpy(dot, "digraph matriz\n{\n");
-    strcat(dot, "\tnode[shape=box, style=filled, color=Gray95];\n");
+    strcat(dot, "\tnode[shape=box, style=filled, color=lightsteelblue3];\n");
     strcat(dot, "\tedge[color=black];\n");
     strcat(dot, "\trankdir=UD;\n");
 
     escribir("matriz.dot", dot, "w");
-    strcpy(dot, "");
+
+    /* { rank=same; Listar filas } */
+    rank();
+
+    /* Listar columnas */
+    graficarColumnas(nivel);
+
+    /* Listar filas */
+    graficarFilas(nivel);
+
+    /* ENLAZAR ENCABEZADOS */
+    encabezado = columnas->primero;
+    strcpy(dot, "\tMATRIZ -> ");
+    while (encabezado != NULL)
+    {
+        sprintf(nodo, "C%d", encabezado->indice);
+        strcat(dot, nodo);
+        if (encabezado->siguiente != NULL)
+            strcat(dot, " -> ");
+        encabezado = encabezado->siguiente;
+    }
+    strcat(dot, ";\n");
+    escribir("matriz.dot", dot, "a");
+
+    encabezado = filas->primero;
+    strcpy(dot, "\tMATRIZ -> ");
+    while (encabezado != NULL)
+    {
+        sprintf(nodo, "F%d", encabezado->indice);
+        strcat(dot, nodo);
+        if (encabezado->siguiente != NULL)
+            strcat(dot, " -> ");
+        encabezado = encabezado->siguiente;
+    }
+    strcat(dot, ";\n");
+    escribir("matriz.dot", dot, "a");
+
+    strcpy(dot, "}");
+    escribir("matriz.dot", dot, "a");
+
+    system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
 }

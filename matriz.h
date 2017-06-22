@@ -43,6 +43,9 @@ public:
 class Matriz
 {
     void escribir(char filename[], char texto[], char *modo);
+    void rank();
+    void graficarColumnas(int nivel);
+    void graficarFilas(int nivel);
 public:
     Matriz();
     ~Matriz();
@@ -50,9 +53,9 @@ public:
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
     void insertar(char *dato, int fila, int columna, int nivel);
-    void graficarFilas();
-    void graficarColumnas();
-    void graficar();
+    void linealizarFila();
+    void linealizarColumna();
+    void graficar(int nivel);
 };
 
 #endif // MATRIZ_H

@@ -12,7 +12,7 @@ Principal::Principal(QWidget *parent) :
     matriz = new Matriz();
     arbol = new ABB();
     ui->setupUi(this);
-    //insertarMatriz();
+    insertarMatriz();
 }
 
 Principal::~Principal()
@@ -112,15 +112,20 @@ void Principal::on_actionAbrir_triggered()
 
 void Principal::on_actionLinealizar_por_Filas_triggered()
 {
-    matriz->graficarFilas();
+    matriz->linealizarFila();
 }
 
 void Principal::on_actionLinealizar_por_Columnas_triggered()
 {
-    matriz->graficarColumnas();
+    matriz->linealizarColumna();
 }
 
 void Principal::on_actionGraficar_triggered()
 {
     arbol->graficar();
+}
+
+void Principal::on_actionGraficar_Matriz_triggered()
+{
+    matriz->graficar(0);
 }
