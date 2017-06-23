@@ -66,7 +66,7 @@ void ABB::insertar(NodoArbol *nodo, char *usuario_, int victorias_, int derrotas
 NodoArbol *ABB::menores(NodoArbol *actual)
 {
     if (actual->izquierda != NULL)
-        return mayores(actual->izquierda);
+        return menores(actual->izquierda);
     else
         return actual;
 }
@@ -74,7 +74,7 @@ NodoArbol *ABB::menores(NodoArbol *actual)
 NodoArbol *ABB::mayores(NodoArbol *actual)
 {
     if (actual->derecha != NULL)
-        return menores(actual->derecha);
+        return mayores(actual->derecha);
     else
         return actual;
 }
@@ -121,11 +121,62 @@ NodoArbol *ABB::buscarPadre(NodoArbol *actual, char *usuario)
                 return buscarPadre(actual->derecha, usuario);
         }
     }
+    else
+        return NULL;
 }
 
-void ABB::eliminar(NodoArbol *nodo, char *usuario_)
+void ABB::eliminarNodoHoja(NodoArbol *actual)
 {
+    NodoArbol *padre = buscarPadre(nodo, actual->usuario);
 
+    if (padre != NULL)
+    {
+        if (strcmp(padre->usuario, actual->usuario) > 0)
+            padre->izquierda = NULL;
+        else
+            padre->derecha = NULL;
+    }
+    else
+        nodo = NULL;
+
+    delete(actual);
+    actual = NULL;
+}
+
+void ABB::eliminarNodoConHijoIzq(NodoArbol *actual)
+{
+    NodoArbol *mayor = mayores(actual->izquierda);
+    NodoArbol *padre = buscarPadre(actual, mayor->usuario);
+
+    strcpy(actual->usuario, mayor->usuario);
+    actual->victorias = mayor->victorias;
+    actual->derrotas = mayor->derrotas;
+
+    if (padre != actual)
+        padre->derecha = mayor->izquierda;
+    else
+        actual->izquierda = mayor->izquierda;
+
+    delete(mayor);
+    mayor = NULL;
+}
+
+void ABB::eliminarNodoConHijoDch(NodoArbol *actual)
+{
+    NodoArbol *menor = menores(actual->derecha);
+    NodoArbol *padre = buscarPadre(actual, menor->usuario);
+
+    strcpy(actual->usuario, menor->usuario);
+    actual->victorias = menor->victorias;
+    actual->derrotas = menor->derrotas;
+
+    if (padre != actual)
+        padre->izquierda = menor->derecha;
+    else
+        actual->derecha = menor->derecha;
+
+    delete(menor);
+    menor = NULL;
 }
 
 /****************************************
@@ -162,45 +213,19 @@ void ABB::eliminar(char *usuario_)
         if (temp->izquierda == NULL && temp->derecha == NULL)
         {
             /* ES NODO HOJA */
-            NodoArbol *padre = buscarPadre(nodo, usuario_);
-            if (padre->usuario > usuario_)
-                padre->izquierda = NULL;
-            else
-                padre->derecha = NULL;
-
-            delete(temp);
-            temp = NULL;
+            eliminarNodoHoja(temp);
         }
         else
         {
             if (temp->izquierda != NULL)
             {
                 /* TIENE UN HIJO IZQUIERDO */
-                NodoArbol *mayor = mayores(temp->izquierda);
-                strcpy(temp->usuario, mayor->usuario);
-                temp->victorias = mayor->victorias;
-                temp->derrotas = mayor->derrotas;
-
-                if (mayor->izquierda != NULL)
-                {
-                }
-                temp->izquierda = NULL;
-                delete(mayor);
-                mayor = NULL;
+                eliminarNodoConHijoIzq(temp);
             }
             else if (temp->derecha != NULL)
             {
                 /* TIENE UN HIJO DERECHO */
-                NodoArbol *menor = menores(temp->derecha);
-                strcpy(temp->usuario, menor->usuario);
-                temp->victorias = menor->victorias;
-                temp->derrotas = menor->derrotas;
-                if (menor->derecha != NULL)
-                {
-                }
-                temp->derecha = NULL;
-                delete(menor);
-                menor = NULL;
+                eliminarNodoConHijoDch(temp);
             }
         }
     }

@@ -16,13 +16,15 @@ public:
 class ABB
 {
     void insertar(NodoArbol *nodo, char *usuario_, int victorias_, int derrotas_);
-    void eliminar(NodoArbol *nodo, char *usuario_);
     void graficar(NodoArbol *nodo);
     void escribir(char filename[], char texto[], char *modo);
     NodoArbol *menores(NodoArbol *actual);
     NodoArbol *mayores(NodoArbol *actual);
     NodoArbol *buscar(NodoArbol *actual, char *usuario);
     NodoArbol *buscarPadre(NodoArbol *actual, char *usuario);
+    void eliminarNodoHoja(NodoArbol *actual);
+    void eliminarNodoConHijoIzq(NodoArbol *actual);
+    void eliminarNodoConHijoDch(NodoArbol *actual);
 public:
     ABB();
     ~ABB();

@@ -6,10 +6,11 @@
 /****************************************
  * CONSTRUCTORES
 ****************************************/
-NodoMatriz::NodoMatriz(char *dato_, int fila_, int columna_, int nivel_)
+NodoMatriz::NodoMatriz(char *dato_, int color_, int fila_, int columna_, int nivel_)
 {
     dato = new char[sizeof(dato)];
     strcpy(dato, dato_);
+    color = color_;
     fila = fila_;
     columna = columna_;
     nivel = nivel_;
@@ -134,10 +135,10 @@ Encabezado *ListaEncabezado::getEncabezado(int indice)
     return NULL;
 }
 
-void Matriz::insertar(char *dato, int fila, int columna, int nivel)
+void Matriz::insertar(char *dato, int color, int fila, int columna, int nivel)
 {
     // CREAR NUEVO NODO
-    NodoMatriz *nuevo = new NodoMatriz(dato, fila, columna, nivel);
+    NodoMatriz *nuevo = new NodoMatriz(dato, color, fila, columna, nivel);
 
     // FILA
     Encabezado *row = filas->getEncabezado(fila);

@@ -4,10 +4,11 @@
 class NodoMatriz
 {
 public:
-    NodoMatriz(char *dato_, int fila_, int columna_, int nivel_);
+    NodoMatriz(char *dato_, int color_, int fila_, int columna_, int nivel_);
     ~NodoMatriz();
 
     char* dato;
+    int color;
     int fila;
     int columna;
     int nivel;
@@ -52,7 +53,7 @@ public:
 
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
-    void insertar(char *dato, int fila, int columna, int nivel);
+    void insertar(char *dato, int color, int fila, int columna, int nivel);
     void linealizarFila();
     void linealizarColumna();
     void graficar(int nivel);
