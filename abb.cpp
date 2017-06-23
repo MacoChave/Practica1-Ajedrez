@@ -18,7 +18,7 @@ NodoArbol::NodoArbol(char *usuario_, int victorias_, int derrotas_)
 
 ABB::ABB()
 {
-    raiz = NULL;
+    nodo = NULL;
 }
 
 /****************************************
@@ -27,6 +27,7 @@ ABB::ABB()
 NodoArbol::~NodoArbol()
 {
     delete[] (usuario);
+    usuario = NULL;
     victorias = 0;
     derrotas = 0;
     izquierda = NULL;
@@ -35,7 +36,7 @@ NodoArbol::~NodoArbol()
 
 ABB::~ABB()
 {
-    delete(raiz);
+    delete(nodo);
 }
 
 /****************************************
@@ -62,6 +63,66 @@ void ABB::insertar(NodoArbol *nodo, char *usuario_, int victorias_, int derrotas
     }
 }
 
+NodoArbol *ABB::menores(NodoArbol *actual)
+{
+    if (actual->izquierda != NULL)
+        return mayores(actual->izquierda);
+    else
+        return actual;
+}
+
+NodoArbol *ABB::mayores(NodoArbol *actual)
+{
+    if (actual->derecha != NULL)
+        return menores(actual->derecha);
+    else
+        return actual;
+}
+
+NodoArbol *ABB::buscar(NodoArbol *actual, char *usuario)
+{
+    if (strcmp(actual->usuario, usuario) > 0)
+    {
+        if (actual->izquierda != NULL)
+            return buscar(actual->izquierda, usuario);
+        else
+            return NULL;
+    }
+    else if (strcmp(actual->usuario, usuario) < 0)
+    {
+        if (actual->derecha != NULL)
+            return buscar(actual->derecha, usuario);
+        else
+            return NULL;
+    }
+    else
+        return actual;
+}
+
+NodoArbol *ABB::buscarPadre(NodoArbol *actual, char *usuario)
+{
+    if (strcmp(actual->usuario, usuario) > 0)
+    {
+        if (actual->izquierda != NULL)
+        {
+            if (strcmp(actual->izquierda->usuario, usuario) == 0)
+                return actual;
+            else
+                return buscarPadre(actual->izquierda, usuario);
+        }
+    }
+    else if (strcmp(actual->usuario, usuario) < 0)
+    {
+        if (actual->derecha != NULL)
+        {
+            if (strcmp(actual->derecha->usuario, usuario) == 0)
+                return actual;
+            else
+                return buscarPadre(actual->derecha, usuario);
+        }
+    }
+}
+
 void ABB::eliminar(NodoArbol *nodo, char *usuario_)
 {
 
@@ -72,30 +133,97 @@ void ABB::eliminar(NodoArbol *nodo, char *usuario_)
 *****************************************/
 void ABB::insertar(char *usuario_, int victorias_, int derrotas_)
 {
-    if (raiz != NULL)
+    if (nodo != NULL)
     {
-        if (strcmp(raiz->usuario, usuario_) > 0)
+        if (strcmp(nodo->usuario, usuario_) > 0)
         {
-            if (raiz->izquierda != NULL)
-                insertar(raiz->izquierda, usuario_, victorias_, derrotas_);
+            if (nodo->izquierda != NULL)
+                insertar(nodo->izquierda, usuario_, victorias_, derrotas_);
             else
-                raiz->izquierda = new NodoArbol(usuario_, victorias_, derrotas_);
+                nodo->izquierda = new NodoArbol(usuario_, victorias_, derrotas_);
         }
-        else if (strcmp(raiz->usuario, usuario_) < 0)
+        else if (strcmp(nodo->usuario, usuario_) < 0)
         {
-            if (raiz->derecha != NULL)
-                insertar(raiz->derecha, usuario_, victorias_, derrotas_);
+            if (nodo->derecha != NULL)
+                insertar(nodo->derecha, usuario_, victorias_, derrotas_);
             else
-                raiz->derecha = new NodoArbol(usuario_, victorias_, derrotas_);
+                nodo->derecha = new NodoArbol(usuario_, victorias_, derrotas_);
         }
     }
     else
-        raiz = new NodoArbol(usuario_, victorias_, derrotas_);
+        nodo = new NodoArbol(usuario_, victorias_, derrotas_);
 }
 
 void ABB::eliminar(char *usuario_)
 {
+    NodoArbol *temp = buscar(usuario_);
+    if (temp != NULL)
+    {
+        if (temp->izquierda == NULL && temp->derecha == NULL)
+        {
+            /* ES NODO HOJA */
+            NodoArbol *padre = buscarPadre(nodo, usuario_);
+            if (padre->usuario > usuario_)
+                padre->izquierda = NULL;
+            else
+                padre->derecha = NULL;
 
+            delete(temp);
+            temp = NULL;
+        }
+        else
+        {
+            if (temp->izquierda != NULL)
+            {
+                /* TIENE UN HIJO IZQUIERDO */
+                NodoArbol *mayor = mayores(temp->izquierda);
+                strcpy(temp->usuario, mayor->usuario);
+                temp->victorias = mayor->victorias;
+                temp->derrotas = mayor->derrotas;
+
+                if (mayor->izquierda != NULL)
+                {
+                }
+                temp->izquierda = NULL;
+                delete(mayor);
+                mayor = NULL;
+            }
+            else if (temp->derecha != NULL)
+            {
+                /* TIENE UN HIJO DERECHO */
+                NodoArbol *menor = menores(temp->derecha);
+                strcpy(temp->usuario, menor->usuario);
+                temp->victorias = menor->victorias;
+                temp->derrotas = menor->derrotas;
+                if (menor->derecha != NULL)
+                {
+                }
+                temp->derecha = NULL;
+                delete(menor);
+                menor = NULL;
+            }
+        }
+    }
+}
+
+NodoArbol *ABB::buscar(char *usuario)
+{
+    if (strcmp(nodo->usuario, usuario) > 0)
+    {
+        if (nodo->izquierda != NULL)
+            return buscar(nodo->izquierda, usuario);
+        else
+            return NULL;
+    }
+    else if (strcmp(nodo->usuario, usuario) < 0)
+    {
+        if (nodo->derecha != NULL)
+            return buscar(nodo->derecha, usuario);
+        else
+            return NULL;
+    }
+    else
+        return nodo;
 }
 
 /**************************************
@@ -170,7 +298,7 @@ void ABB::graficar()
     escribir("arbol.dot", dot, "w");
     strcpy(dot, "");
 
-    graficar(raiz);
+    graficar(nodo);
 
     escribir("arbol.dot", "}", "a");
 

@@ -129,3 +129,9 @@ void Principal::on_actionGraficar_Matriz_triggered()
 {
     matriz->graficar(0);
 }
+
+void Principal::on_actionEliminar_triggered()
+{
+    arbol->eliminar("Zero");
+    arbol->eliminar("Sakura");
+}

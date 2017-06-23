@@ -46,6 +46,7 @@
       <string>Arbol</string>
      </property>
      <addaction name="actionGraficar"/>
+     <addaction name="actionEliminar"/>
     </widget>
     <addaction name="menuMatriz"/>
     <addaction name="menuArbol"/>
@@ -85,6 +86,11 @@
   <action name="actionGraficar">
    <property name="text">
     <string>Graficar</string>
+   </property>
+  </action>
+  <action name="actionEliminar">
+   <property name="text">
+    <string>Eliminar</string>
    </property>
   </action>
  </widget>
