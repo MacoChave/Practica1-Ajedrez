@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFile>
 #include <QFileDialog>
+#include <QInputDialog>
 #include "matriz.h"
 #include "abb.h"
 

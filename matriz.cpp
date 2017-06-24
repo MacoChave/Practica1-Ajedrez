@@ -279,7 +279,8 @@ void Matriz::linealizarFila()
             strcat(dot, nodo);
             strcat(dot, "[label=\"");
             strcat(dot, actual->dato);
-            strcat(dot, "\"];\n");
+            strcat(dot, "\"];\n\t");
+
             strcat(dot, nodo);
             strcat(dot, " -> ");
 
@@ -321,12 +322,10 @@ void Matriz::linealizarColumna()
             strcat(dot, nodo);
             strcat(dot, "[label=\"");
             strcat(dot, actual->dato);
-            strcat(dot, "\"];\n");
-            if (actual->abajo != NULL)
-            {
-                strcat(dot, nodo);
-                strcat(dot, " -> ");
-            }
+            strcat(dot, "\"];\n\t");
+
+            strcat(dot, nodo);
+            strcat(dot, " -> ");
 
             actual = actual->abajo;
             strcpy(nodo, "");
@@ -335,6 +334,7 @@ void Matriz::linealizarColumna()
         }
         column = column->siguiente;
     }
+    escribir("columnas.dot", "NULL;\n}", "a");
 
     system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
 }

@@ -4,6 +4,7 @@
 #include "string.h"
 #include "principal.h"
 #include "ui_principal.h"
+#include "reportes.h"
 
 Principal::Principal(QWidget *parent) :
     QMainWindow(parent),
@@ -142,9 +143,18 @@ void Principal::on_actionGraficar_triggered()
 void Principal::on_actionGraficar_Matriz_triggered()
 {
     matriz->graficar(0);
+    Reportes *reporteWindow = new Reportes(this);
+    reporteWindow->setVisible(true);
+
+    delete(reporteWindow);
 }
 
 void Principal::on_actionEliminar_triggered()
 {
+    QString usuario = QInputDialog::getText(
+                this,
+                "Eliminar usuario",
+                "Ingresar usuario a elliminar");
 
+    arbol->eliminar(usuario.toLatin1().data());
 }
