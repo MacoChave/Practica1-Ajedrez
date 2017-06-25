@@ -50,7 +50,8 @@ public:
 class Matriz
 {
     void escribir(char filename[], char texto[], char *modo);
-    void rank();
+    NodoMatriz* buscarNivel(NodoMatriz *nodo, int nivel);
+    void rank(int nivel);
     void graficarColumnas(int nivel);
     void graficarFilas(int nivel);
 public:
@@ -60,8 +61,8 @@ public:
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
     void insertar(char *dato, int color, int y, int x, int nivel);
-    void linealizarFila();
-    void linealizarColumna();
+    void linealizarFila(int nivel);
+    void linealizarColumna(int nivel);
     void graficar(int nivel);
 };
 

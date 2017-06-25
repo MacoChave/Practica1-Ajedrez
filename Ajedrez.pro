@@ -20,6 +20,5 @@ SOURCES += main.cpp\
 HEADERS  += principal.h \
     matriz.h \
     abb.h \
-    reportes.h
 
 FORMS    += principal.ui

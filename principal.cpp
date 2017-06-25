@@ -182,12 +182,20 @@ void Principal::on_actionAbrir_triggered()
 
 void Principal::on_actionLinealizar_por_Filas_triggered()
 {
-    matriz->linealizarFila();
+    int nivel = QInputDialog::getInt(
+                this,
+                "Selección de nivel",
+                "Ingresar el nivel a linealizar por filas");
+    matriz->linealizarFila(nivel);
 }
 
 void Principal::on_actionLinealizar_por_Columnas_triggered()
 {
-    matriz->linealizarColumna();
+    int nivel = QInputDialog::getInt(
+                this,
+                "Seleccion de nivel",
+                "Ingresar el nivel a linealizar por columna");
+    matriz->linealizarColumna(nivel);
 }
 
 void Principal::on_actionGraficar_triggered()

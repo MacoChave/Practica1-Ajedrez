@@ -318,9 +318,22 @@ void Matriz::escribir(char filename[], char texto[], char *modo)
     }
 }
 
-void Matriz::linealizarFila()
+NodoMatriz *Matriz::buscarNivel(NodoMatriz *nodo, int nivel)
 {
-    char dot[256];
+    NodoMatriz *aux = nodo;
+    while (aux != NULL)
+    {
+        if (aux->nivel == nivel)
+            break;
+        else
+            aux = aux->atras;
+    }
+    return aux;
+}
+
+void Matriz::linealizarFila(int nivel)
+{
+    char dot[100];
 
     strcpy(dot, "digraph linealRow\n{\n");
     strcat(dot, "\tnodesep=0.05;\n");
@@ -338,21 +351,24 @@ void Matriz::linealizarFila()
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
-            strcpy(dot, nodo);
-            strcat(dot, ";\n\t");
-            strcat(dot, nodo);
-            strcat(dot, "[label=\"");
-            strcat(dot, actual->dato);
-            strcat(dot, "\"];\n\t");
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
+                strcpy(dot, nodo);
+                strcat(dot, ";\n\t");
+                strcat(dot, nodo);
+                strcat(dot, "[label=\"");
+                strcat(dot, actual->dato);
+                strcat(dot, "\"];\n\t");
 
-            strcat(dot, nodo);
-            strcat(dot, " -> ");
+                strcat(dot, nodo);
+                strcat(dot, " -> ");
+
+                escribir("filas.dot", dot, "a");
+            }
 
             actual = actual->derecha;
-            strcpy(nodo, "");
-
-            escribir("filas.dot", dot, "a");
         }
         row = row->siguiente;
     }
@@ -361,9 +377,9 @@ void Matriz::linealizarFila()
     system("dot -Tpng /home/marco/Escritorio/filas.dot -o /home/marco/Escritorio/filas.png");
 }
 
-void Matriz::linealizarColumna()
+void Matriz::linealizarColumna(int nivel)
 {
-    char dot[256];
+    char dot[100];
 
     strcpy(dot, "digraph linealColumn\n{\n");
     strcat(dot, "\tnodesep=0.05;\n");
@@ -381,21 +397,24 @@ void Matriz::linealizarColumna()
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
-            strcpy(dot, nodo);
-            strcat(dot, ";\n\t");
-            strcat(dot, nodo);
-            strcat(dot, "[label=\"");
-            strcat(dot, actual->dato);
-            strcat(dot, "\"];\n\t");
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
+                strcpy(dot, nodo);
+                strcat(dot, ";\n\t");
+                strcat(dot, nodo);
+                strcat(dot, "[label=\"");
+                strcat(dot, actual->dato);
+                strcat(dot, "\"];\n\t");
 
-            strcat(dot, nodo);
-            strcat(dot, " -> ");
+                strcat(dot, nodo);
+                strcat(dot, " -> ");
+
+                escribir("columnas.dot", dot, "a");
+            }
 
             actual = actual->abajo;
-            strcpy(nodo, "");
-
-            escribir("columnas.dot", dot, "a");
         }
         column = column->siguiente;
     }
@@ -404,7 +423,7 @@ void Matriz::linealizarColumna()
     system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
 }
 
-void Matriz::rank()
+void Matriz::rank(int nivel)
 {
     char dot[128];
     char nodo[10];
@@ -563,7 +582,7 @@ void Matriz::graficar(int nivel)
     escribir("matriz.dot", dot, "w");
 
     /* { rank=same; Listar filas } */
-    rank();
+    rank(nivel);
 
     /***********************************
      * LISTAR COLUMNAS
