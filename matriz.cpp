@@ -3,21 +3,23 @@
 #include <string.h>
 #include "matriz.h"
 
-/****************************************
+/******************************************************************************
  * CONSTRUCTORES
-****************************************/
+******************************************************************************/
 NodoMatriz::NodoMatriz(char *dato_, int color_, int fila_, int columna_, int nivel_)
 {
     dato = new char[sizeof(dato)];
     strcpy(dato, dato_);
     color = color_;
-    fila = fila_;
-    columna = columna_;
+    y = fila_;
+    x = columna_;
     nivel = nivel_;
     izquierda = NULL;
     derecha = NULL;
     arriba = NULL;
     abajo = NULL;
+    adelante = NULL;
+    atras = NULL;
 }
 
 Encabezado::Encabezado(int indice_)
@@ -31,6 +33,7 @@ Encabezado::Encabezado(int indice_)
 ListaEncabezado::ListaEncabezado()
 {
     primero = NULL;
+    ultimo = NULL;
 }
 
 Matriz::Matriz()
@@ -39,16 +42,22 @@ Matriz::Matriz()
     filas = new ListaEncabezado();
 }
 
-/****************************************
+/******************************************************************************
  * DESTRUCTORES
-****************************************/
+******************************************************************************/
 NodoMatriz::~NodoMatriz()
 {
     delete[] (dato);
+    color = 0;
+    y = 0;
+    x = 0;
+    nivel = 0;
     izquierda = NULL;
     derecha = NULL;
     arriba = NULL;
     abajo = NULL;
+    adelante = NULL;
+    atras = NULL;
 }
 
 Encabezado::~Encabezado()
@@ -70,54 +79,140 @@ Matriz::~Matriz()
     delete(filas);
 }
 
-/***************************************
+/*****************************************************************************
  * INSERTAR
-***************************************/
-void ListaEncabezado::insertar(Encabezado *nuevo)
+*****************************************************************************/
+
+NodoMatriz* Encabezado::ordenarNodos(NodoMatriz * actual, NodoMatriz *nuevo)
 {
-    if (primero == NULL)
-        primero = nuevo;
+    if (actual->nivel > nuevo->nivel)
+    {
+        actual->adelante = nuevo;
+        nuevo->atras = actual;
+
+        nuevo->arriba = actual->arriba;
+        nuevo->abajo = actual->abajo;
+        nuevo->derecha = actual->derecha;
+        nuevo->izquierda = actual->izquierda;
+
+        if (actual->arriba != NULL)
+            actual->arriba->abajo = nuevo;
+        if (actual->abajo != NULL)
+            actual->abajo->arriba = nuevo;
+        if (actual->derecha != NULL)
+            actual->derecha->izquierda = nuevo;
+        if (actual->izquierda != NULL)
+            actual->izquierda->derecha = nuevo;
+
+        return nuevo;
+    }
     else
     {
-        if (nuevo->indice < primero->indice)
+        nuevo->atras = actual->atras;
+        nuevo->adelante = actual;
+        if (actual->atras != NULL)
+            actual->atras->adelante = nuevo;
+        actual->atras = nuevo;
+
+        return actual;
+    }
+}
+
+void Encabezado::insertarFila(NodoMatriz *nuevo)
+{
+    if (apunta != NULL)
+    {
+        if (apunta->x > nuevo->x)
         {
-            nuevo->siguiente = primero;
-            primero->anterior = nuevo;
-            primero = nuevo;
+            /* INSERTAR EN CABEZA */
+            nuevo->derecha = apunta;
+            apunta->izquierda = nuevo;
+
+            apunta = nuevo;
         }
         else
         {
-            Encabezado *actual = primero;
-
-            while (actual->siguiente != NULL)
+            NodoMatriz *aux = apunta;
+            while (aux->derecha != NULL)
             {
-                if (nuevo->indice < actual->indice)
-                {
-                    nuevo->anterior = actual->anterior;
-                    nuevo->siguiente = actual;
-                    actual->anterior->siguiente = nuevo;
-                    actual->anterior = nuevo;
-                    break;
-                }
-                actual = actual->siguiente;
-            }
-            if (actual->siguiente == NULL)
-            {
-                if (nuevo->indice < actual->indice)
-                {
-                    nuevo->anterior = actual->anterior;
-                    nuevo->siguiente = actual;
-                    actual->anterior->siguiente = nuevo;
-                    actual->anterior = nuevo;
-                }
+                if (aux->x < nuevo->x)
+                    aux = aux->derecha;
                 else
-                {
-                    actual->siguiente = nuevo;
-                    nuevo->anterior = actual;
-                }
+                    break;
+            }
+
+            if (aux->x > nuevo->x)
+            {
+                /* INSERTAR ANTES */
+                nuevo->izquierda = aux->izquierda;
+                nuevo->derecha = aux;
+                aux->izquierda->derecha = nuevo;
+                aux->izquierda = nuevo;
+            }
+            else if (aux->x < nuevo->x)
+            {
+                /* INSERTAR DESPUES */
+                nuevo->derecha = aux->derecha;
+                nuevo->izquierda = aux;
+                if (aux->derecha != NULL)
+                    aux->derecha->izquierda = nuevo;
+                aux->derecha = nuevo;
+            }
+            else
+            {
+                aux = ordenarNodos(aux, nuevo);
+                if (aux->izquierda == NULL)
+                    apunta = aux;
             }
         }
     }
+    else
+        apunta = nuevo;
+}
+
+void Encabezado::insertarColumna(NodoMatriz *nuevo)
+{
+    if (apunta != NULL)
+    {
+        if (apunta->y > nuevo->y)
+        {
+            /* INSERTAR EN CABEZA */
+            nuevo->abajo = apunta;
+            apunta->arriba = nuevo;
+
+            apunta = nuevo;
+        }
+        else
+        {
+            NodoMatriz *aux = apunta;
+            while (aux->abajo != NULL)
+            {
+                if (aux->y < nuevo->y)
+                    aux = aux->abajo;
+                else
+                    break;
+            }
+
+            if (aux->y > nuevo->y)
+            {
+                /* INSERTAR ANTES */
+                nuevo->arriba = aux->arriba;
+                nuevo->abajo = aux;
+                aux->arriba->abajo = nuevo;
+                aux->arriba = nuevo;
+            } else if(aux->y < nuevo->y)
+            {
+                /* INSERTAR DESPUES */
+                nuevo->abajo = aux->abajo;
+                nuevo->arriba = aux;
+                if (aux->abajo != NULL)
+                    aux->abajo->arriba = nuevo;
+                aux->abajo = nuevo;
+            }
+        }
+    }
+    else
+        apunta = nuevo;
 }
 
 Encabezado *ListaEncabezado::getEncabezado(int indice)
@@ -135,107 +230,77 @@ Encabezado *ListaEncabezado::getEncabezado(int indice)
     return NULL;
 }
 
-void Matriz::insertar(char *dato, int color, int fila, int columna, int nivel)
+Encabezado *ListaEncabezado::insertar(int indice)
 {
-    // CREAR NUEVO NODO
-    NodoMatriz *nuevo = new NodoMatriz(dato, color, fila, columna, nivel);
-
-    // FILA
-    Encabezado *row = filas->getEncabezado(fila);
-
-    if (row == NULL)
+    if (primero != NULL)
     {
-        /* CREAR UNA FILA E INSERTAR */
-        row = new Encabezado(fila);
-        filas->insertar(row);
-        row->apunta = nuevo;
-    }
-    else
-    {
-        /* INSERTAR EN FILA LOCALIZADA */
-        if (nuevo->columna < row->apunta->columna)
+        if (primero->indice > indice)
         {
-            /* INSERTAR AL INICIO */
-            nuevo->derecha = row->apunta;
-            row->apunta->izquierda = nuevo;
-            row->apunta = nuevo;
+            /* INSERTAR EN CABEZA */
+            Encabezado *temp = primero;
+            primero = new Encabezado(indice);
+            primero->siguiente = temp;
+            temp->anterior = primero;
+
+            return primero;
+        }
+        else if (ultimo->indice < indice)
+        {
+            /* INSERTAR EN COLA */
+            ultimo->siguiente = new Encabezado(indice);
+            ultimo = ultimo->siguiente;
+
+            return ultimo;
         }
         else
         {
-            NodoMatriz *actual = row->apunta;
-
-            while (actual->derecha != NULL)
+            Encabezado *actual = primero;
+            while (actual != ultimo)
             {
-                if (nuevo->columna < actual->columna)
-                {
-                    /* INSERTAR AL MEDIO */
-                    nuevo->izquierda = actual->izquierda;
-                    nuevo->derecha = actual;
-                    actual->izquierda->derecha = nuevo;
-                    actual->izquierda = nuevo;
+                if (actual->indice < indice)
+                    actual = actual->siguiente;
+                else
                     break;
-                }
-                actual = actual->derecha;
             }
-            if (actual->derecha == NULL)
+
+            if (actual->indice > indice)
             {
-                /* INSERTAR AL FINAL */
-                actual->derecha = nuevo;
-                nuevo->izquierda = actual;
+                /* INSERTAR ANTES */
+                Encabezado *nuevo = new Encabezado(indice);
+                nuevo->anterior = actual->anterior;
+                nuevo->siguiente = actual;
+                actual->anterior->siguiente = nuevo;
+                actual->anterior = nuevo;
+
+                return nuevo;
             }
+            else
+                return actual;
         }
-    }
-
-    // COLUMNA
-    Encabezado *column = columnas->getEncabezado(columna);
-
-    if (column == NULL)
-    {
-        /* CREAR UNA COLUMNA E INSERTAR */
-        column = new Encabezado(columna);
-        columnas->insertar(column);
-        column->apunta = nuevo;
     }
     else
     {
-        /* INSERTAR UNA COLUMNA LOCALIZADA */
-        if (nuevo->fila < column->apunta->fila)
-        {
-            /* INSERTAR AL INICIO */
-            nuevo->abajo = column->apunta;
-            column->apunta->arriba = nuevo;
-            column->apunta = nuevo;
-        }
-        else
-        {
-            NodoMatriz *actual = column->apunta;
+        /* INICIAR LISTA */
+        primero = new Encabezado(indice);
+        ultimo = primero;
 
-            while (actual->abajo != NULL)
-            {
-                if (nuevo->fila < actual->fila)
-                {
-                    /* INSERTAR AL MEDIO */
-                    nuevo->arriba = actual->arriba;
-                    nuevo->abajo = actual;
-                    actual->arriba->abajo = nuevo;
-                    actual->arriba = nuevo;
-                    break;
-                }
-                actual = actual->abajo;
-            }
-            if (actual->abajo == NULL)
-            {
-                /* INSERTAR AL FINAL */
-                actual->abajo = nuevo;
-                nuevo->arriba = actual;
-            }
-        }
+        return primero;
     }
 }
 
-/**************************************
+void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
+{
+    Encabezado *col = columnas->insertar(x);
+    Encabezado *fil = filas->insertar(y);
+    NodoMatriz *nuevo = new NodoMatriz(dato, color, y, x, nivel);
+
+    fil->insertarFila(nuevo);
+    col->insertarColumna(nuevo);
+}
+
+/****************************************************************************
  * GRAFICAR
-**************************************/
+****************************************************************************/
 void Matriz::escribir(char filename[], char texto[], char *modo)
 {
     char path[25];
@@ -273,7 +338,7 @@ void Matriz::linealizarFila()
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
             strcpy(dot, nodo);
             strcat(dot, ";\n\t");
             strcat(dot, nodo);
@@ -316,7 +381,7 @@ void Matriz::linealizarColumna()
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
             strcpy(dot, nodo);
             strcat(dot, ";\n\t");
             strcat(dot, nodo);
@@ -344,7 +409,9 @@ void Matriz::rank()
     char dot[128];
     char nodo[10];
 
-    /* { rank=same; cabecera } */
+    /***********************************
+     * RANKSAME MATRIZ Y COLUMNAS
+    ***********************************/
     strcpy(dot, "\n\t{ rank=same; MATRIZ -> ");
     Encabezado *encabezado = columnas->primero;
     while (encabezado != NULL)
@@ -357,7 +424,9 @@ void Matriz::rank()
     strcat(dot, "};");
     escribir("matriz.dot", dot, "a");
 
-    /* { rank=same; fila -> lista nodo } */
+    /***********************************
+     * RANKSAME LISTAS FILAS
+    ***********************************/
     encabezado = filas->primero;
     while (encabezado != NULL)
     {
@@ -369,7 +438,7 @@ void Matriz::rank()
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
             strcpy(dot, nodo);
             strcat(dot, "; ");
 
@@ -409,7 +478,7 @@ void Matriz::graficarColumnas(int nivel)
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
             strcpy(dot, nodo);
             strcat(dot, ";\n\t");
             strcat(dot, nodo);
@@ -457,7 +526,7 @@ void Matriz::graficarFilas(int nivel)
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->fila, actual->columna, actual->nivel);
+            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
             strcpy(dot, nodo);
             strcat(dot, ";\n");
 
@@ -483,6 +552,9 @@ void Matriz::graficar(int nivel)
     char nodo[5];
     Encabezado *encabezado;
 
+    /***********************************
+     * CREAR ENCABEZADO DOT
+    ***********************************/
     strcpy(dot, "digraph matriz\n{\n");
     strcat(dot, "\tnode[shape=box, style=filled, color=lightsteelblue3];\n");
     strcat(dot, "\tedge[color=black];\n");
@@ -493,13 +565,19 @@ void Matriz::graficar(int nivel)
     /* { rank=same; Listar filas } */
     rank();
 
-    /* Listar columnas */
+    /***********************************
+     * LISTAR COLUMNAS
+    ***********************************/
     graficarColumnas(nivel);
 
-    /* Listar filas */
+    /***********************************
+     * LISTAR FILAS
+    ***********************************/
     graficarFilas(nivel);
 
-    /* ENLAZAR ENCABEZADOS */
+    /***********************************
+     * ENLAZAR COLUMNAS
+    ***********************************/
     encabezado = columnas->primero;
     strcpy(dot, "\tMATRIZ -> ");
     while (encabezado != NULL)
@@ -513,6 +591,9 @@ void Matriz::graficar(int nivel)
     strcat(dot, ";\n");
     escribir("matriz.dot", dot, "a");
 
+    /***********************************
+     * ENLAZAR FILAS
+    ***********************************/
     encabezado = filas->primero;
     strcpy(dot, "\tMATRIZ -> ");
     while (encabezado != NULL)
@@ -529,5 +610,5 @@ void Matriz::graficar(int nivel)
     strcpy(dot, "}");
     escribir("matriz.dot", dot, "a");
 
-    system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
+    system("dot -Tpng /home/marco/Escritorio/matriz.dot -o /home/marco/Escritorio/matriz.png");
 }

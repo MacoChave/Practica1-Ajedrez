@@ -76,6 +76,9 @@ void Principal::separar(char* texto)
 
 void Principal::insertarMatriz()
 {
+    /***********************************
+     * BLANCAS NIVEL 0
+    ***********************************/
     matriz->insertar("Caballo", 0, 8, 1, 0);
     matriz->insertar("Alfil", 0, 8, 2, 0);
     matriz->insertar("Torre", 0, 8, 3, 0);
@@ -93,6 +96,29 @@ void Principal::insertarMatriz()
     matriz->insertar("Peon", 0, 7, 7, 0);
     matriz->insertar("Peon", 0, 7, 8, 0);
 
+    /***********************************
+     * BLANCAS NIVEL 1
+    ***********************************/
+    matriz->insertar("Torre", 0, 8, 6, 1);
+    matriz->insertar("Alfil", 0, 8, 7, 1);
+    matriz->insertar("Caballo", 0, 8, 8, 1);
+    matriz->insertar("Peon", 0, 7, 6, 1);
+    matriz->insertar("Peon", 0, 7, 7, 1);
+    matriz->insertar("Peon", 0, 7, 8, 1);
+
+    /***********************************
+     * BLANCAS NIVEL 2
+    ***********************************/
+    matriz->insertar("Caballo", 0, 8, 1, 2);
+    matriz->insertar("Alfil", 0, 8, 2, 2);
+    matriz->insertar("Torre", 0, 8, 3, 2);
+    matriz->insertar("Peon", 0, 7, 1, 2);
+    matriz->insertar("Peon", 0, 7, 2, 2);
+    matriz->insertar("Peon", 0, 7, 3, 2);
+
+    /***********************************
+     * NEGRAS NIVEL 0
+    ***********************************/
     matriz->insertar("Caballo", 1, 1, 1, 0);
     matriz->insertar("Alfil", 1, 1, 2, 0);
     matriz->insertar("Torre", 1, 1, 3, 0);
@@ -109,6 +135,26 @@ void Principal::insertarMatriz()
     matriz->insertar("Peon", 1, 2, 6, 0);
     matriz->insertar("Peon", 1, 2, 7, 0);
     matriz->insertar("Peon", 1, 2, 8, 0);
+
+    /***********************************
+     * NEGRAS NIVEL 1
+    ***********************************/
+    matriz->insertar("Caballo", 1, 1, 1, 1);
+    matriz->insertar("Alfil", 1, 1, 2, 1);
+    matriz->insertar("Torre", 1, 1, 3, 1);
+    matriz->insertar("Peon", 1, 2, 1, 1);
+    matriz->insertar("Peon", 1, 2, 2, 1);
+    matriz->insertar("Peon", 1, 2, 3, 1);
+
+    /***********************************
+     * NEGRAS NIVEL 2
+    ***********************************/
+    matriz->insertar("Torre", 1, 1, 6, 2);
+    matriz->insertar("Alfil", 1, 1, 7, 2);
+    matriz->insertar("Caballo", 1, 1, 8, 2);
+    matriz->insertar("Peon", 1, 2, 6, 2);
+    matriz->insertar("Peon", 1, 2, 7, 2);
+    matriz->insertar("Peon", 1, 2, 8, 2);
 }
 
 void Principal::on_actionAbrir_triggered()

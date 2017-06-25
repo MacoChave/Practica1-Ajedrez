@@ -9,17 +9,20 @@ public:
 
     char* dato;
     int color;
-    int fila;
-    int columna;
+    int y;
+    int x;
     int nivel;
     NodoMatriz *izquierda;
     NodoMatriz *derecha;
     NodoMatriz *arriba;
     NodoMatriz *abajo;
+    NodoMatriz *adelante;
+    NodoMatriz *atras;
 };
 
 class Encabezado
 {
+    NodoMatriz *ordenarNodos(NodoMatriz *actual, NodoMatriz *nuevo);
 public:
     Encabezado(int indice_);
     ~Encabezado();
@@ -28,6 +31,8 @@ public:
     Encabezado *siguiente;
     Encabezado *anterior;
     NodoMatriz *apunta;
+    void insertarFila(NodoMatriz *nuevo);
+    void insertarColumna(NodoMatriz *nuevo);
 };
 
 class ListaEncabezado
@@ -37,7 +42,8 @@ public:
     ~ListaEncabezado();
 
     Encabezado *primero;
-    void insertar(Encabezado *nuevo);
+    Encabezado *ultimo;
+    Encabezado* insertar(int indice);
     Encabezado *getEncabezado(int indice);
 };
 
@@ -53,7 +59,7 @@ public:
 
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
-    void insertar(char *dato, int color, int fila, int columna, int nivel);
+    void insertar(char *dato, int color, int y, int x, int nivel);
     void linealizarFila();
     void linealizarColumna();
     void graficar(int nivel);
