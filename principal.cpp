@@ -4,7 +4,6 @@
 #include "string.h"
 #include "principal.h"
 #include "ui_principal.h"
-#include "reportes.h"
 
 Principal::Principal(QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +12,16 @@ Principal::Principal(QWidget *parent) :
     matriz = new Matriz();
     arbol = new ABB();
     ui->setupUi(this);
+    turno = true;
+    ui->fmeJugador1->setEnabled(false);
+    ui->fmeJugador2->setEnabled(false);
+
+    strcpy(torre, "T");
+    strcpy(alfil, "A");
+    strcpy(caballo, "C");
+    strcpy(reina, "D");
+    strcpy(rey, "R");
+    strcpy(peon, "P");
     insertarMatriz();
 }
 
@@ -79,82 +88,82 @@ void Principal::insertarMatriz()
     /***********************************
      * BLANCAS NIVEL 0
     ***********************************/
-    matriz->insertar("Caballo", 0, 8, 1, 0);
-    matriz->insertar("Alfil", 0, 8, 2, 0);
-    matriz->insertar("Torre", 0, 8, 3, 0);
-    matriz->insertar("Rey", 0, 8, 4, 0);
-    matriz->insertar("Reina", 0, 8, 5, 0);
-    matriz->insertar("Torre", 0, 8, 6, 0);
-    matriz->insertar("Alfil", 0, 8, 7, 0);
-    matriz->insertar("Caballo", 0, 8, 8, 0);
-    matriz->insertar("Peon", 0, 7, 1, 0);
-    matriz->insertar("Peon", 0, 7, 2, 0);
-    matriz->insertar("Peon", 0, 7, 3, 0);
-    matriz->insertar("Peon", 0, 7, 4, 0);
-    matriz->insertar("Peon", 0, 7, 5, 0);
-    matriz->insertar("Peon", 0, 7, 6, 0);
-    matriz->insertar("Peon", 0, 7, 7, 0);
-    matriz->insertar("Peon", 0, 7, 8, 0);
+    matriz->insertar(caballo, 0, 8, 1, 0);
+    matriz->insertar(alfil, 0, 8, 2, 0);
+    matriz->insertar(torre, 0, 8, 3, 0);
+    matriz->insertar(rey, 0, 8, 4, 0);
+    matriz->insertar(reina, 0, 8, 5, 0);
+    matriz->insertar(torre, 0, 8, 6, 0);
+    matriz->insertar(alfil, 0, 8, 7, 0);
+    matriz->insertar(caballo, 0, 8, 8, 0);
+    matriz->insertar(peon, 0, 7, 1, 0);
+    matriz->insertar(peon, 0, 7, 2, 0);
+    matriz->insertar(peon, 0, 7, 3, 0);
+    matriz->insertar(peon, 0, 7, 4, 0);
+    matriz->insertar(peon, 0, 7, 5, 0);
+    matriz->insertar(peon, 0, 7, 6, 0);
+    matriz->insertar(peon, 0, 7, 7, 0);
+    matriz->insertar(peon, 0, 7, 8, 0);
 
     /***********************************
      * BLANCAS NIVEL 1
     ***********************************/
-    matriz->insertar("Torre", 0, 8, 6, 1);
-    matriz->insertar("Alfil", 0, 8, 7, 1);
-    matriz->insertar("Caballo", 0, 8, 8, 1);
-    matriz->insertar("Peon", 0, 7, 6, 1);
-    matriz->insertar("Peon", 0, 7, 7, 1);
-    matriz->insertar("Peon", 0, 7, 8, 1);
+    matriz->insertar(torre, 0, 8, 6, 1);
+    matriz->insertar(alfil, 0, 8, 7, 1);
+    matriz->insertar(caballo, 0, 8, 8, 1);
+    matriz->insertar(peon, 0, 7, 6, 1);
+    matriz->insertar(peon, 0, 7, 7, 1);
+    matriz->insertar(peon, 0, 7, 8, 1);
 
     /***********************************
      * BLANCAS NIVEL 2
     ***********************************/
-    matriz->insertar("Caballo", 0, 8, 1, 2);
-    matriz->insertar("Alfil", 0, 8, 2, 2);
-    matriz->insertar("Torre", 0, 8, 3, 2);
-    matriz->insertar("Peon", 0, 7, 1, 2);
-    matriz->insertar("Peon", 0, 7, 2, 2);
-    matriz->insertar("Peon", 0, 7, 3, 2);
+    matriz->insertar(caballo, 0, 8, 1, 2);
+    matriz->insertar(alfil, 0, 8, 2, 2);
+    matriz->insertar(torre, 0, 8, 3, 2);
+    matriz->insertar(peon, 0, 7, 1, 2);
+    matriz->insertar(peon, 0, 7, 2, 2);
+    matriz->insertar(peon, 0, 7, 3, 2);
 
     /***********************************
      * NEGRAS NIVEL 0
     ***********************************/
-    matriz->insertar("Caballo", 1, 1, 1, 0);
-    matriz->insertar("Alfil", 1, 1, 2, 0);
-    matriz->insertar("Torre", 1, 1, 3, 0);
-    matriz->insertar("Rey", 1, 1, 4, 0);
-    matriz->insertar("Reina", 1, 1, 5, 0);
-    matriz->insertar("Torre", 1, 1, 6, 0);
-    matriz->insertar("Alfil", 1, 1, 7, 0);
-    matriz->insertar("Caballo", 1, 1, 8, 0);
-    matriz->insertar("Peon", 1, 2, 1, 0);
-    matriz->insertar("Peon", 1, 2, 2, 0);
-    matriz->insertar("Peon", 1, 2, 3, 0);
-    matriz->insertar("Peon", 1, 2, 4, 0);
-    matriz->insertar("Peon", 1, 2, 5, 0);
-    matriz->insertar("Peon", 1, 2, 6, 0);
-    matriz->insertar("Peon", 1, 2, 7, 0);
-    matriz->insertar("Peon", 1, 2, 8, 0);
+    matriz->insertar(caballo, 1, 1, 1, 0);
+    matriz->insertar(alfil, 1, 1, 2, 0);
+    matriz->insertar(torre, 1, 1, 3, 0);
+    matriz->insertar(rey, 1, 1, 4, 0);
+    matriz->insertar(reina, 1, 1, 5, 0);
+    matriz->insertar(torre, 1, 1, 6, 0);
+    matriz->insertar(alfil, 1, 1, 7, 0);
+    matriz->insertar(caballo, 1, 1, 8, 0);
+    matriz->insertar(peon, 1, 2, 1, 0);
+    matriz->insertar(peon, 1, 2, 2, 0);
+    matriz->insertar(peon, 1, 2, 3, 0);
+    matriz->insertar(peon, 1, 2, 4, 0);
+    matriz->insertar(peon, 1, 2, 5, 0);
+    matriz->insertar(peon, 1, 2, 6, 0);
+    matriz->insertar(peon, 1, 2, 7, 0);
+    matriz->insertar(peon, 1, 2, 8, 0);
 
     /***********************************
      * NEGRAS NIVEL 1
     ***********************************/
-    matriz->insertar("Caballo", 1, 1, 1, 1);
-    matriz->insertar("Alfil", 1, 1, 2, 1);
-    matriz->insertar("Torre", 1, 1, 3, 1);
-    matriz->insertar("Peon", 1, 2, 1, 1);
-    matriz->insertar("Peon", 1, 2, 2, 1);
-    matriz->insertar("Peon", 1, 2, 3, 1);
+    matriz->insertar(caballo, 1, 1, 1, 1);
+    matriz->insertar(alfil, 1, 1, 2, 1);
+    matriz->insertar(torre, 1, 1, 3, 1);
+    matriz->insertar(peon, 1, 2, 1, 1);
+    matriz->insertar(peon, 1, 2, 2, 1);
+    matriz->insertar(peon, 1, 2, 3, 1);
 
     /***********************************
      * NEGRAS NIVEL 2
     ***********************************/
-    matriz->insertar("Torre", 1, 1, 6, 2);
-    matriz->insertar("Alfil", 1, 1, 7, 2);
-    matriz->insertar("Caballo", 1, 1, 8, 2);
-    matriz->insertar("Peon", 1, 2, 6, 2);
-    matriz->insertar("Peon", 1, 2, 7, 2);
-    matriz->insertar("Peon", 1, 2, 8, 2);
+    matriz->insertar(torre, 1, 1, 6, 2);
+    matriz->insertar(alfil, 1, 1, 7, 2);
+    matriz->insertar(caballo, 1, 1, 8, 2);
+    matriz->insertar(peon, 1, 2, 6, 2);
+    matriz->insertar(peon, 1, 2, 7, 2);
+    matriz->insertar(peon, 1, 2, 8, 2);
 }
 
 void Principal::on_actionAbrir_triggered()
@@ -189,10 +198,7 @@ void Principal::on_actionGraficar_triggered()
 void Principal::on_actionGraficar_Matriz_triggered()
 {
     matriz->graficar(0);
-    Reportes *reporteWindow = new Reportes(this);
-    reporteWindow->setVisible(true);
-
-    delete(reporteWindow);
+    system("./home/marco/Escritorio/matriz.png");
 }
 
 void Principal::on_actionEliminar_triggered()
@@ -200,7 +206,44 @@ void Principal::on_actionEliminar_triggered()
     QString usuario = QInputDialog::getText(
                 this,
                 "Eliminar usuario",
-                "Ingresar usuario a elliminar");
+                "Ingresar usuario a eliminar");
 
     arbol->eliminar(usuario.toLatin1().data());
+}
+
+void Principal::on_actionAgregar_triggered()
+{
+    QString usuario = QInputDialog::getText(
+                this,
+                "Agregar usuario",
+                "Ingresar nombre de usuario");
+    int victorias = QInputDialog::getInt(
+                this,
+                "Agregar usuario",
+                "Ingresar número de victorias del usuario");
+    int derrotas = QInputDialog::getInt(
+                this,
+                "Agregar usuario",
+                "Ingresar número de derrotas del usuario");
+    arbol->insertar(usuario.toLatin1().data(), victorias, derrotas);
+}
+
+void Principal::on_btnMover2_clicked()
+{
+    turno = !turno;
+    ui->fmeJugador2->setEnabled(!turno);
+    ui->fmeJugador1->setEnabled(turno);
+}
+
+void Principal::on_btnMover1_clicked()
+{
+    turno = !turno;
+    ui->fmeJugador1->setEnabled(turno);
+    ui->fmeJugador2->setEnabled(!turno);
+}
+
+void Principal::on_actionJugar_triggered()
+{
+    turno = true;
+    ui->fmeJugador1->setEnabled(turno);
 }

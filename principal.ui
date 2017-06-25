@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1366</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -19,14 +19,286 @@
   <property name="windowTitle">
    <string>Principal</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>4</x>
+      <y>6</y>
+      <width>1361</width>
+      <height>701</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QGroupBox" name="grpNivel0">
+       <property name="title">
+        <string>Nivel 0</string>
+       </property>
+       <widget class="QLabel" name="lblNivel0">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>361</width>
+          <height>671</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>768</width>
+          <height>768</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QGroupBox" name="grpNivel1">
+       <property name="title">
+        <string>Nivel 1</string>
+       </property>
+       <widget class="QLabel" name="lblNivel1">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>361</width>
+          <height>671</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>768</width>
+          <height>768</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QGroupBox" name="grpNivel2">
+       <property name="title">
+        <string>Nivel 2</string>
+       </property>
+       <widget class="QLabel" name="lblNivel2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>361</width>
+          <height>671</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>768</width>
+          <height>768</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QGroupBox" name="grpControl">
+       <property name="maximumSize">
+        <size>
+         <width>170</width>
+         <height>768</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Control de juego</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>3</x>
+          <y>26</y>
+          <width>241</width>
+          <height>671</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="maximumSize">
+            <size>
+             <width>500</width>
+             <height>500</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Control de turnos</string>
+           </property>
+           <widget class="QFrame" name="fmeJugador1">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>280</y>
+              <width>161</width>
+              <height>181</height>
+             </rect>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QWidget" name="">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>141</width>
+               <height>161</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QLabel" name="lblUsuario1">
+                <property name="text">
+                 <string>Usuario</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblUser1">
+                <property name="text">
+                 <string>&lt;usuario&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblMovimiento1">
+                <property name="text">
+                 <string>Movimiento</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="edtMovimiento1"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnMover1">
+                <property name="text">
+                 <string>Mover</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+           <widget class="QFrame" name="fmeJugador2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>90</y>
+              <width>161</width>
+              <height>181</height>
+             </rect>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QWidget" name="layoutWidget_2">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>141</width>
+               <height>161</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QLabel" name="lblUsuario2">
+                <property name="text">
+                 <string>Usuario</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblUser2">
+                <property name="text">
+                 <string>&lt;usuario&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblMovimiento2">
+                <property name="text">
+                 <string>Movimiento</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="edtMovimiento2"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnMover2">
+                <property name="text">
+                 <string>Mover</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="maximumSize">
+            <size>
+             <width>500</width>
+             <height>200</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Consola</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
-     <height>23</height>
+     <width>1366</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
@@ -41,7 +313,7 @@
     </property>
     <widget class="QMenu" name="menuMatriz">
      <property name="title">
-      <string>Matriz</string>
+      <string>Tablero</string>
      </property>
      <addaction name="actionLinealizar_por_Filas"/>
      <addaction name="actionLinealizar_por_Columnas"/>
@@ -49,16 +321,24 @@
     </widget>
     <widget class="QMenu" name="menuArbol">
      <property name="title">
-      <string>Arbol</string>
+      <string>Usuarios</string>
      </property>
      <addaction name="actionGraficar"/>
+     <addaction name="actionAgregar"/>
      <addaction name="actionEliminar"/>
     </widget>
     <addaction name="menuMatriz"/>
     <addaction name="menuArbol"/>
    </widget>
+   <widget class="QMenu" name="menuJuego">
+    <property name="title">
+     <string>Configuracion</string>
+    </property>
+    <addaction name="actionJugar"/>
+   </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuEstructura"/>
+   <addaction name="menuJuego"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -97,6 +377,16 @@
   <action name="actionEliminar">
    <property name="text">
     <string>Eliminar</string>
+   </property>
+  </action>
+  <action name="actionAgregar">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionJugar">
+   <property name="text">
+    <string>Jugar</string>
    </property>
   </action>
  </widget>

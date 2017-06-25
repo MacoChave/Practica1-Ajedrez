@@ -35,11 +35,26 @@ private slots:
 
     void on_actionEliminar_triggered();
 
+    void on_actionAgregar_triggered();
+
+    void on_btnMover2_clicked();
+
+    void on_btnMover1_clicked();
+
+    void on_actionJugar_triggered();
+
 private:
     Ui::Principal *ui;
     QString lectura(QString filename);
     void separar(char* texto);
     void insertarMatriz();
+    char torre[6];
+    char alfil[6];
+    char caballo[8];
+    char reina[6];
+    char rey[4];
+    char peon[5];
+    bool turno;
 };
 
 #endif // PRINCIPAL_H
