@@ -211,12 +211,27 @@ void Principal::on_actionGraficar_Matriz_triggered()
 
 void Principal::on_actionEliminar_triggered()
 {
+    /*
     QString usuario = QInputDialog::getText(
                 this,
                 "Eliminar usuario",
                 "Ingresar usuario a eliminar");
 
     arbol->eliminar(usuario.toLatin1().data());
+    */
+    QString dato = QInputDialog::getText(
+                this,
+                "Buscar nodo",
+                "Nombre de pieza");
+    int color = QInputDialog::getInt(
+                this,
+                "Buscar nodo",
+                "Color de pieza");
+    int nivel = QInputDialog::getInt(
+                this,
+                "Buscar nodo",
+                "Nivel de pieza");
+    matriz->mover(dato.toLatin1().data(), color, nivel);
 }
 
 void Principal::on_actionAgregar_triggered()

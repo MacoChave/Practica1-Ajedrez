@@ -215,19 +215,43 @@ void Encabezado::insertarColumna(NodoMatriz *nuevo)
         apunta = nuevo;
 }
 
-Encabezado *ListaEncabezado::getEncabezado(int indice)
+NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, char *dato, int color, int nivel)
 {
-    Encabezado *actual = primero;
+    NodoMatriz *aux = nodo;
+    NodoMatriz *tmp;
 
-    while (actual != NULL)
+    while (aux != NULL)
     {
-        if (actual->indice == indice)
-            return actual;
-
-        actual = actual->siguiente;
+        if (strcmp(aux->dato, dato) == 0 && aux->color == color && aux->nivel == nivel)
+            break;
+        else
+        {
+            if (aux->atras != NULL)
+            {
+                tmp = aux->atras;
+                if (strcmp(tmp->dato, dato) == 0 && tmp->color == color && tmp->nivel == nivel)
+                {
+                    aux = tmp;
+                    break;
+                }
+                else
+                {
+                    if (tmp->atras != NULL)
+                    {
+                        tmp = tmp->atras;
+                        if (strcmp(tmp->dato, dato) == 0 && tmp->color == color && tmp->nivel == nivel)
+                        {
+                            aux = tmp;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        aux = aux->derecha;
     }
 
-    return NULL;
+    return aux;
 }
 
 Encabezado *ListaEncabezado::insertar(int indice)
@@ -288,6 +312,22 @@ Encabezado *ListaEncabezado::insertar(int indice)
     }
 }
 
+NodoMatriz *ListaEncabezado::buscarNodoMatriz(char *dato, int color, int nivel)
+{
+    Encabezado *filaAux = primero;
+    NodoMatriz *aux = NULL;
+
+    while (filaAux != NULL)
+    {
+        aux = filaAux->buscarNodo(filaAux->apunta, dato, color, nivel);
+        if (aux == NULL)
+            filaAux = filaAux->siguiente;
+        else
+            break;
+    }
+    return aux;
+}
+
 void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
 {
     Encabezado *col = columnas->insertar(x);
@@ -296,6 +336,11 @@ void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
 
     fil->insertarFila(nuevo);
     col->insertarColumna(nuevo);
+}
+
+void Matriz::mover(char *dato, int color, int nivel)
+{
+    NodoMatriz *nodoEliminar = filas->buscarNodoMatriz(dato, color, nivel);
 }
 
 /****************************************************************************

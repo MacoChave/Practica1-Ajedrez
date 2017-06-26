@@ -33,6 +33,7 @@ public:
     NodoMatriz *apunta;
     void insertarFila(NodoMatriz *nuevo);
     void insertarColumna(NodoMatriz *nuevo);
+    NodoMatriz *buscarNodo(NodoMatriz *nodo, char *dato, int color, int nivel);
 };
 
 class ListaEncabezado
@@ -44,7 +45,7 @@ public:
     Encabezado *primero;
     Encabezado *ultimo;
     Encabezado* insertar(int indice);
-    Encabezado *getEncabezado(int indice);
+    NodoMatriz *buscarNodoMatriz(char *dato, int color, int nivel);
 };
 
 class Matriz
@@ -61,6 +62,7 @@ public:
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
     void insertar(char *dato, int color, int y, int x, int nivel);
+    void mover(char *dato, int color, int nivel);
     void linealizarFila(int nivel);
     void linealizarColumna(int nivel);
     void graficar(int nivel);
