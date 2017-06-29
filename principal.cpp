@@ -47,7 +47,7 @@ QString Principal::lectura(QString filename)
     }
 }
 
-void Principal::separar(char* texto)
+void Principal::splitUsuarios(char* texto)
 {
     bool fin = false;
 
@@ -86,6 +86,7 @@ void Principal::separar(char* texto)
 void Principal::insertarMatriz()
 {
     /***********************************
+     * BLANCAS COLOR = 0
      * BLANCAS NIVEL 0
     ***********************************/
     matriz->insertar(caballo, 0, 8, 1, 0);
@@ -126,6 +127,7 @@ void Principal::insertarMatriz()
     matriz->insertar(peon, 0, 7, 3, 2);
 
     /***********************************
+     * NEGRAS COLOR = 1
      * NEGRAS NIVEL 0
     ***********************************/
     matriz->insertar(caballo, 1, 1, 1, 0);
@@ -177,73 +179,13 @@ void Principal::on_actionAbrir_triggered()
     QString texto = lectura(filename);
 
     if (texto != NULL)
-        separar(texto.toLatin1().data());
-}
-
-void Principal::on_actionLinealizar_por_Filas_triggered()
-{
-    int nivel = QInputDialog::getInt(
-                this,
-                "Selección de nivel",
-                "Ingresar el nivel a linealizar por filas");
-    matriz->linealizarFila(nivel);
-}
-
-void Principal::on_actionLinealizar_por_Columnas_triggered()
-{
-    int nivel = QInputDialog::getInt(
-                this,
-                "Seleccion de nivel",
-                "Ingresar el nivel a linealizar por columna");
-    matriz->linealizarColumna(nivel);
+        splitUsuarios(texto.toLatin1().data());
 }
 
 void Principal::on_actionGraficar_triggered()
 {
     arbol->graficar();
-}
-
-void Principal::on_actionGraficar_Matriz_triggered()
-{
-    int nivel = QInputDialog::getInt(
-                this,
-                "Seleccion de nivel",
-                "Ingresar el nivel de matriz");
-    matriz->graficar(nivel);
-    system("./home/marco/Escritorio/matriz.png");
-}
-
-void Principal::on_actionEliminar_triggered()
-{
-    /*
-    QString usuario = QInputDialog::getText(
-                this,
-                "Eliminar usuario",
-                "Ingresar usuario a eliminar");
-
-    arbol->eliminar(usuario.toLatin1().data());
-    */
-    QString dato = QInputDialog::getText(
-                this,
-                "Mover nodo",
-                "Nombre de pieza");
-    int color = QInputDialog::getInt(
-                this,
-                "Mover nodo",
-                "Color de pieza");
-    int nivel = QInputDialog::getInt(
-                this,
-                "Mover nodo",
-                "Nivel de pieza");
-    int fila = QInputDialog::getInt(
-                this,
-                "Mover nodo",
-                "Fila destino");
-    int col = QInputDialog::getInt(
-                this,
-                "Mover nodo",
-                "Columna destino");
-    matriz->mover(dato.toLatin1().data(), color, nivel, fila, col);
+    system("/home/marco/Escritorio/arbol.png");
 }
 
 void Principal::on_actionAgregar_triggered()
@@ -263,18 +205,153 @@ void Principal::on_actionAgregar_triggered()
     arbol->insertar(usuario.toLatin1().data(), victorias, derrotas);
 }
 
+void Principal::on_actionEliminar_triggered()
+{
+    QString usuario = QInputDialog::getText(
+                this,
+                "Eliminar usuario",
+                "Ingresar usuario a eliminar");
+
+    arbol->eliminar(usuario.toLatin1().data());
+}
+
+void Principal::on_actionLinealizar_por_Filas_triggered()
+{
+    int nivel = QInputDialog::getInt(
+                this,
+                "Selección de nivel",
+                "Ingresar el nivel a linealizar por filas");
+    matriz->linealizarFila(nivel);
+    system("/home/marco/Escritorio/filas.png");
+}
+
+void Principal::on_actionLinealizar_por_Columnas_triggered()
+{
+    int nivel = QInputDialog::getInt(
+                this,
+                "Seleccion de nivel",
+                "Ingresar el nivel a linealizar por columna");
+    matriz->linealizarColumna(nivel);
+    system("/home/marco/Escritorio/columnas.png");
+}
+
+void Principal::on_actionGraficar_Matriz_triggered()
+{
+    int nivel = QInputDialog::getInt(
+                this,
+                "Seleccion de nivel",
+                "Ingresar el nivel de matriz");
+    matriz->graficar(nivel);
+}
+
+int Principal::filaAsociada(char dato)
+{
+    switch (dato) {
+    case 'A':
+        return 1;
+        break;
+    case 'B':
+        return 2;
+        break;
+    case 'C':
+        return 3;
+        break;
+    case 'D':
+        return 4;
+        break;
+    case 'E':
+        return 5;
+        break;
+    case 'F':
+        return 6;
+        break;
+    case 'G':
+        return 7;
+        break;
+    case 'H':
+        return 8;
+        break;
+    default:
+        return 0;
+        break;
+    }
+}
+
 void Principal::on_btnMover2_clicked()
 {
-    turno = !turno;
-    ui->fmeJugador2->setEnabled(!turno);
-    ui->fmeJugador1->setEnabled(turno);
+    char *texto;
+    char *dato;
+    char *destino;
+    int columnaDestino;
+    int filaDestino;
+    int nivel;
+    int color = 0;
+
+    texto = ui->edtMovimiento2->text().toLatin1().data();
+    dato = strtok(texto, "-");
+    nivel = atoi(strtok(NULL, "-"));
+    destino = strtok(NULL, "-");
+    filaDestino = filaAsociada(destino[0]);
+    columnaDestino = destino[1] - '0';
+
+    if (matriz->mover(dato, color, nivel, filaDestino, columnaDestino))
+    {
+        turno = !turno;
+        ui->fmeJugador2->setEnabled(!turno);
+        ui->fmeJugador1->setEnabled(turno);
+        ui->edtMovimiento2->setText("");
+
+        matriz->graficar(0);
+        matriz->graficar(1);
+        matriz->graficar(2);
+
+        QImage m;
+        m.load("/home/marco/Escritorio/Matriz_0");
+        ui->lblNivel0->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel0->width(), ui->lblNivel0->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_1");
+        ui->lblNivel1->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel1->width(), ui->lblNivel1->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_2");
+        ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
+    }
 }
 
 void Principal::on_btnMover1_clicked()
 {
-    turno = !turno;
-    ui->fmeJugador1->setEnabled(turno);
-    ui->fmeJugador2->setEnabled(!turno);
+    char *texto;
+    char *dato;
+    char *destino;
+    int columnaDestino;
+    int filaDestino;
+    int nivel;
+    int color = 1;
+
+    texto = ui->edtMovimiento1->text().toLatin1().data();
+    dato = strtok(texto, "-");
+    nivel = atoi(strtok(NULL, "-"));
+    destino = strtok(NULL, "-");
+    filaDestino = filaAsociada(destino[0]);
+    columnaDestino = destino[1] - '0';
+
+    if (matriz->mover(dato, color, nivel, filaDestino, columnaDestino))
+    {
+        turno = !turno;
+        ui->fmeJugador1->setEnabled(turno);
+        ui->fmeJugador2->setEnabled(!turno);
+        ui->edtMovimiento1->setText("");
+
+        matriz->graficar(0);
+        matriz->graficar(1);
+        matriz->graficar(2);
+
+        QImage m;
+        m.load("/home/marco/Escritorio/Matriz_0");
+        ui->lblNivel0->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel0->width(), ui->lblNivel0->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_1");
+        ui->lblNivel1->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel1->width(), ui->lblNivel1->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_2");
+        ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
+    }
+
 }
 
 void Principal::on_actionJugar_triggered()

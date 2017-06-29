@@ -36,6 +36,7 @@ public:
     void eliminarFila(NodoMatriz *nodo);
     void eliminarColumna(NodoMatriz *nodo);
     NodoMatriz *buscarNodo(NodoMatriz *nodo, char *dato, int color, int nivel);
+    NodoMatriz *buscarNodo(NodoMatriz *nodo, int columna);
 };
 
 class ListaEncabezado
@@ -50,11 +51,12 @@ public:
     void eliminarFila(NodoMatriz *nodo);
     void eliminarColumna(NodoMatriz *nodo);
     NodoMatriz *buscarNodoMatriz(char *dato, int color, int nivel);
+    NodoMatriz *buscarNodoMatriz(int fila, int columna);
 };
 
 class Matriz
 {
-    bool validarMovimiento(NodoMatriz *nodo, int fila, int columna);
+    bool validarMovimiento(NodoMatriz *nodoOrigen, NodoMatriz *nodoDestino, int fila, int columna, int color);
     void escribir(char filename[], char texto[], char *modo);
     NodoMatriz* buscarNivel(NodoMatriz *nodo, int nivel);
     void graficarEnlaceColumnaNodo(char *titulo, int nivel);
@@ -71,7 +73,7 @@ public:
     ListaEncabezado *columnas;
     ListaEncabezado *filas;
     void insertar(char *dato, int color, int y, int x, int nivel);
-    void mover(char *dato, int color, int nivel, int fila, int columna);
+    bool mover(char dato[], int color, int nivel, int fila, int columna);
     void linealizarFila(int nivel);
     void linealizarColumna(int nivel);
     void graficar(int nivel);

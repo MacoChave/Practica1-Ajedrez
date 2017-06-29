@@ -46,8 +46,9 @@ private slots:
 private:
     Ui::Principal *ui;
     QString lectura(QString filename);
-    void separar(char* texto);
+    void splitUsuarios(char* texto);
     void insertarMatriz();
+    int filaAsociada(char dato);
     char torre[2];
     char alfil[2];
     char caballo[2];

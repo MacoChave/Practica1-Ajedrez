@@ -350,6 +350,24 @@ NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, char *dato, int color, int 
     return aux;
 }
 
+NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, int columna)
+{
+    NodoMatriz *aux = nodo;
+
+    while (aux != NULL)
+    {
+        if (aux->x < columna)
+            aux = aux->derecha;
+        else
+            break;
+    }
+
+    if (aux->x == columna)
+        return aux;
+    else
+        return NULL;
+}
+
 /*****************************************************************************
  * ***************************************************************************
  *  LISTA ENCABEZADO
@@ -461,6 +479,24 @@ NodoMatriz *ListaEncabezado::buscarNodoMatriz(char *dato, int color, int nivel)
     return aux;
 }
 
+NodoMatriz *ListaEncabezado::buscarNodoMatriz(int fila, int columna)
+{
+    Encabezado *filaAux = primero;
+    NodoMatriz *aux = NULL;
+
+    while (filaAux != NULL)
+    {
+        if (filaAux->indice < fila)
+            filaAux = filaAux->siguiente;
+        else
+            break;
+    }
+    if (filaAux != NULL && filaAux->indice == fila)
+        aux = filaAux->buscarNodo(filaAux->apunta, columna);
+
+    return aux;
+}
+
 /*****************************************************************************
  * ***************************************************************************
  *  MATRIZ
@@ -482,78 +518,199 @@ void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
 /*****************************************************************************
  *  MOVER
 *****************************************************************************/
-bool Matriz::validarMovimiento(NodoMatriz *nodo, int fila, int columna)
+bool Matriz::validarMovimiento(NodoMatriz *nodoOrigen, NodoMatriz *nodoDestino, int fila, int columna, int color)
 {
     /*
      * T - TORRE | C - CABALLO | A - ALFIL | D - DAMA | R - REY | P - PEON
      * 0 - NEGRO
      * 1 - BLANCO
+     * MOVER -> 0
+     * COMER -> 1
     */
-    if (strcmp(nodo->dato, "T"))
+    if (strcmp(nodoOrigen->dato, "T") == 0)
     {
-        if (nodo->color == 0)
+        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
         {
+            if (nodoDestino != NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+    }
+    if (strcmp(nodoOrigen->dato, "C") == 0)
+    {
+        if (abs(fila - nodoOrigen->y) == 2 && abs(columna - nodoOrigen->x) == 1)
+        {
+            if (nodoDestino != NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+    }
+    if (strcmp(nodoOrigen->dato, "A") == 0)
+    {
+        if (nodoOrigen->x == columna)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else if (nodoOrigen->y == fila)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    }
+    if (strcmp(nodoOrigen->dato, "D") == 0)
+    {
+        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
+        {
+            if (nodoDestino != NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else if (nodoOrigen->x == columna)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else if (nodoOrigen->y == fila)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    }
+    if (strcmp(nodoOrigen->dato, "R") == 0)
+    {
+        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
+        {
+            if (nodoDestino != NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else if (nodoOrigen->x == columna)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else if (nodoOrigen->y == fila)
+        {
+            if (nodoDestino == NULL)
+                return 0;
+            else if (nodoDestino->color != nodoOrigen->color)
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    }
+    if (strcmp(nodoOrigen->dato, "P") == 0)
+    {
+        if (nodoOrigen->color == 0)
+        {
+            if (abs(fila - nodoOrigen->y) == 1 && columna == nodoOrigen->x)
+                return 0;
+            else if (nodoOrigen->y - fila == 1 && abs(nodoOrigen->x - columna) == 1)
+                if (nodoDestino != NULL && nodoDestino->color != nodoOrigen->color)
+                    return 1;
+                else
+                    return -1;
+            else
+                return -1;
         }
         else
         {
-        }
-    }
-    if (strcmp(nodo->dato, "C"))
-    {
-        if (nodo->color == 0)
-        {
-        }
-        else
-        {
-        }
-    }
-    if (strcmp(nodo->dato, "A"))
-    {
-        if (nodo->color == 0)
-        {
-        }
-        else
-        {
-        }
-    }
-    if (strcmp(nodo->dato, "D"))
-    {
-        if (nodo->color == 0)
-        {
-        }
-        else
-        {
-        }
-    }
-    if (strcmp(nodo->dato, "R"))
-    {
-        if (nodo->color == 0)
-        {
-        }
-        else
-        {
-        }
-    }
-    if (strcmp(nodo->dato, "P"))
-    {
-        if (abs(fila - nodo->y) == 1)
-        {
-
+            if (abs(nodoOrigen->y - fila) == 1 && columna == nodoOrigen->x)
+                return 0;
+            else if (fila - nodoOrigen->y == 1 && abs(nodoOrigen->x - columna) == 1)
+            {
+                if (nodoDestino != NULL && nodoDestino->color != nodoOrigen->color)
+                    return 1;
+                else
+                    return -1;
+            }
+            else
+                return -1;
         }
     }
 }
 
-void Matriz::mover(char *dato, int color, int nivel, int fila, int columna)
+bool Matriz::mover(char dato[1], int color, int nivel, int fila, int columna)
 {
-    NodoMatriz *nodoEliminar = filas->buscarNodoMatriz(dato, color, nivel);
-    if (nodoEliminar != NULL)
+    bool exito = false;
+    NodoMatriz *nodoOrigen = filas->buscarNodoMatriz(dato, color, nivel);
+    NodoMatriz *nodoDestino = filas->buscarNodoMatriz(fila, columna);
+    if (nodoOrigen != NULL)
     {
-        filas->eliminarFila(nodoEliminar);
-        columnas->eliminarColumna(nodoEliminar);
+        switch (validarMovimiento(nodoOrigen, nodoDestino, fila, columna, color)) {
+        case 0: //MOVER
+            filas->eliminarFila(nodoOrigen);
+            columnas->eliminarColumna(nodoOrigen);
 
-        delete(nodoEliminar);
-        nodoEliminar = NULL;
+            delete(nodoOrigen);
+            nodoOrigen = NULL;
+
+            insertar(dato, color, fila, columna, nivel);
+
+            exito = true;
+            break;
+        case 1: //COMER
+            filas->eliminarFila(nodoOrigen);
+            columnas->eliminarColumna(nodoOrigen);
+
+            delete(nodoOrigen);
+            nodoOrigen = NULL;
+
+            filas->eliminarFila(nodoDestino);
+            columnas->eliminarColumna(nodoDestino);
+
+            delete(nodoDestino);
+            nodoDestino = NULL;
+            insertar(dato, color, fila, columna, nivel);
+
+            exito = true;
+            break;
+        default:
+            exito = false;
+            break;
+        }
     }
+
+    return exito;
 }
 
 /****************************************************************************
@@ -981,8 +1138,6 @@ void Matriz::graficar(int nivel)
     sprintf(tituloGrafica, "Matriz_%d", nivel);
     strcpy(filename, tituloGrafica);
     strcat(filename, ".dot");
-    printf("%s", tituloGrafica);
-    printf("%s", filename);
 
     /***********************************
      * CREAR ENCABEZADO DOT
