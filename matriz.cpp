@@ -3,9 +3,11 @@
 #include <string.h>
 #include "matriz.h"
 
-/******************************************************************************
- * CONSTRUCTORES
-******************************************************************************/
+/*****************************************************************************
+ * ***************************************************************************
+ *  CONSTRUCTORES
+ * ***************************************************************************
+*****************************************************************************/
 NodoMatriz::NodoMatriz(char *dato_, int color_, int fila_, int columna_, int nivel_)
 {
     dato = new char[sizeof(dato)];
@@ -42,9 +44,11 @@ Matriz::Matriz()
     filas = new ListaEncabezado();
 }
 
-/******************************************************************************
- * DESTRUCTORES
-******************************************************************************/
+/*****************************************************************************
+ * ***************************************************************************
+ *  DESTRUCTORES
+ * ***************************************************************************
+*****************************************************************************/
 NodoMatriz::~NodoMatriz()
 {
     delete[] (dato);
@@ -80,9 +84,13 @@ Matriz::~Matriz()
 }
 
 /*****************************************************************************
- * INSERTAR
+ * ***************************************************************************
+ *  ENCABEZADOS
+ * ***************************************************************************
 *****************************************************************************/
-
+/*****************************************************************************
+ *  ORDENAR NODOS POR NIVEL
+*****************************************************************************/
 NodoMatriz* Encabezado::ordenarNodos(NodoMatriz * actual, NodoMatriz *nuevo)
 {
     if (actual->nivel > nuevo->nivel)
@@ -118,6 +126,9 @@ NodoMatriz* Encabezado::ordenarNodos(NodoMatriz * actual, NodoMatriz *nuevo)
     }
 }
 
+/*****************************************************************************
+ *  INSERTAR EN FILAS O COLUMNAS
+*****************************************************************************/
 void Encabezado::insertarFila(NodoMatriz *nuevo)
 {
     if (apunta != NULL)
@@ -215,6 +226,91 @@ void Encabezado::insertarColumna(NodoMatriz *nuevo)
         apunta = nuevo;
 }
 
+void Encabezado::eliminarFila(NodoMatriz *nodo)
+{
+    bool top = false;
+    bool bottom = false;
+
+    if (nodo->adelante != NULL)
+        nodo->adelante->atras = nodo->atras;
+    else
+        top = true;
+    if (nodo->atras != NULL)
+        nodo->atras->adelante = nodo->adelante;
+    else
+        bottom = true;
+
+    if (nodo->derecha != NULL)
+    {
+        if (!bottom)
+        {
+            nodo->derecha->izquierda = nodo->atras;
+            nodo->atras->derecha = nodo->derecha;
+        }
+        else
+            nodo->derecha->izquierda = nodo->izquierda;
+    }
+    if (nodo->izquierda != NULL)
+    {
+        if (!bottom)
+        {
+            nodo->izquierda->derecha = nodo->atras;
+            nodo->atras->izquierda = nodo->izquierda;
+        }
+        else
+            nodo->izquierda->derecha = nodo->derecha;
+    }
+    else
+    {
+        if (top && !bottom)
+            apunta = nodo->atras;
+        else if (top)
+            apunta = nodo->derecha;
+    }
+}
+
+void Encabezado::eliminarColumna(NodoMatriz *nodo)
+{
+    bool top = false;
+    bool bottom = false;
+
+    if (nodo->adelante == NULL)
+        top = true;
+    if (nodo->atras == NULL)
+        bottom = true;
+
+    if (nodo->abajo != NULL)
+    {
+        if (!bottom)
+        {
+            nodo->abajo->arriba = nodo->atras;
+            nodo->atras->abajo = nodo->abajo;
+        }
+        else
+            nodo->abajo->arriba = nodo->arriba;
+    }
+    if (nodo->arriba != NULL)
+    {
+        if (!bottom)
+        {
+            nodo->arriba->abajo = nodo->atras;
+            nodo->atras->arriba = nodo->arriba;
+        }
+        else
+            nodo->arriba->abajo = nodo->abajo;
+    }
+    else
+    {
+        if (top &&!bottom)
+            apunta = nodo->atras;
+        else if (top)
+            apunta = nodo->abajo;
+    }
+}
+
+/*****************************************************************************
+ *  BUSCAR NODO
+*****************************************************************************/
 NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, char *dato, int color, int nivel)
 {
     NodoMatriz *aux = nodo;
@@ -254,6 +350,11 @@ NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, char *dato, int color, int 
     return aux;
 }
 
+/*****************************************************************************
+ * ***************************************************************************
+ *  LISTA ENCABEZADO
+ * ***************************************************************************
+*****************************************************************************/
 Encabezado *ListaEncabezado::insertar(int indice)
 {
     if (primero != NULL)
@@ -312,6 +413,38 @@ Encabezado *ListaEncabezado::insertar(int indice)
     }
 }
 
+void ListaEncabezado::eliminarFila(NodoMatriz *nodo)
+{
+    /*  BUSCAR ENCABEZADO UBICACION FILA  */
+    Encabezado *filaEliminar = primero;
+
+    while (filaEliminar != NULL)
+    {
+        if (filaEliminar->indice < nodo->y)
+            filaEliminar = filaEliminar->siguiente;
+        else
+            break;
+    }
+
+    filaEliminar->eliminarFila(nodo);
+}
+
+void ListaEncabezado::eliminarColumna(NodoMatriz *nodo)
+{
+    /*  BUSCAR ENCABEZADO UBICACION COLUMNA  */
+    Encabezado *columnaEliminar = primero;
+
+    while (columnaEliminar != NULL)
+    {
+        if (columnaEliminar->indice < nodo->x)
+            columnaEliminar = columnaEliminar->siguiente;
+        else
+            break;
+    }
+
+    columnaEliminar->eliminarColumna(nodo);
+}
+
 NodoMatriz *ListaEncabezado::buscarNodoMatriz(char *dato, int color, int nivel)
 {
     Encabezado *filaAux = primero;
@@ -328,6 +461,14 @@ NodoMatriz *ListaEncabezado::buscarNodoMatriz(char *dato, int color, int nivel)
     return aux;
 }
 
+/*****************************************************************************
+ * ***************************************************************************
+ *  MATRIZ
+ * ***************************************************************************
+*****************************************************************************/
+/*****************************************************************************
+ *  INSERTAR
+*****************************************************************************/
 void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
 {
     Encabezado *col = columnas->insertar(x);
@@ -338,13 +479,85 @@ void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
     col->insertarColumna(nuevo);
 }
 
-void Matriz::mover(char *dato, int color, int nivel)
+/*****************************************************************************
+ *  MOVER
+*****************************************************************************/
+bool Matriz::validarMovimiento(NodoMatriz *nodo, int fila, int columna)
+{
+    /*
+     * T - TORRE | C - CABALLO | A - ALFIL | D - DAMA | R - REY | P - PEON
+     * 0 - NEGRO
+     * 1 - BLANCO
+    */
+    if (strcmp(nodo->dato, "T"))
+    {
+        if (nodo->color == 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    if (strcmp(nodo->dato, "C"))
+    {
+        if (nodo->color == 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    if (strcmp(nodo->dato, "A"))
+    {
+        if (nodo->color == 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    if (strcmp(nodo->dato, "D"))
+    {
+        if (nodo->color == 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    if (strcmp(nodo->dato, "R"))
+    {
+        if (nodo->color == 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    if (strcmp(nodo->dato, "P"))
+    {
+        if (abs(fila - nodo->y) == 1)
+        {
+
+        }
+    }
+}
+
+void Matriz::mover(char *dato, int color, int nivel, int fila, int columna)
 {
     NodoMatriz *nodoEliminar = filas->buscarNodoMatriz(dato, color, nivel);
+    if (nodoEliminar != NULL)
+    {
+        filas->eliminarFila(nodoEliminar);
+        columnas->eliminarColumna(nodoEliminar);
+
+        delete(nodoEliminar);
+        nodoEliminar = NULL;
+    }
 }
 
 /****************************************************************************
- * GRAFICAR
+ *  ESCRIBIR EN ARCHIVO
 ****************************************************************************/
 void Matriz::escribir(char filename[], char texto[], char *modo)
 {
@@ -376,6 +589,9 @@ NodoMatriz *Matriz::buscarNivel(NodoMatriz *nodo, int nivel)
     return aux;
 }
 
+/*****************************************************************************
+ *  GRAFICAR POR LINALIZACIÓN
+*****************************************************************************/
 void Matriz::linealizarFila(int nivel)
 {
     char dot[100];
@@ -468,153 +684,305 @@ void Matriz::linealizarColumna(int nivel)
     system("dot -Tpng /home/marco/Escritorio/columnas.dot -o /home/marco/Escritorio/columnas.png");
 }
 
-void Matriz::rank(int nivel)
+void Matriz::graficarColumnas(char *titulo, int nivel)
 {
-    char dot[128];
-    char nodo[10];
-
-    /***********************************
-     * RANKSAME MATRIZ Y COLUMNAS
-    ***********************************/
-    strcpy(dot, "\n\t{ rank=same; MATRIZ -> ");
-    Encabezado *encabezado = columnas->primero;
-    while (encabezado != NULL)
-    {
-        sprintf(nodo, "C%d; ", encabezado->indice);
-        strcat(dot, nodo);
-
-        encabezado = encabezado->siguiente;
-    }
-    strcat(dot, "};");
-    escribir("matriz.dot", dot, "a");
-
-    /***********************************
-     * RANKSAME LISTAS FILAS
-    ***********************************/
-    encabezado = filas->primero;
-    while (encabezado != NULL)
-    {
-        NodoMatriz *actual = encabezado->apunta;
-        strcpy(dot, "\t{ rank=same; ");
-        sprintf(nodo, "F%d; ", encabezado->indice);
-        strcat(dot, nodo);
-        escribir("matriz.dot", dot, "a");
-
-        while (actual != NULL)
-        {
-            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
-            strcpy(dot, nodo);
-            strcat(dot, "; ");
-
-            actual = actual->derecha;
-
-            escribir("matriz.dot", dot, "a");
-        }
-
-        strcpy(dot, "};\n");
-        escribir("matriz.dot", dot, "a");
-        encabezado = encabezado->siguiente;
-    }
-}
-
-void Matriz::graficarColumnas(int nivel)
-{
-    char dot[256];
-    char nodo[10];
-
+    char dot[100];
     Encabezado *column = columnas->primero;
+
     while (column != NULL)
     {
         NodoMatriz *actual = column->apunta;
-
-        strcpy(dot, "\n\t");
-        sprintf(nodo, "C%d", column->indice);
-        strcat(dot, nodo);
-        strcat(dot, "[label=\"");
-        sprintf(nodo, "%d", column->indice);
-        strcat(dot, nodo);
-        strcat(dot, "\"];\n");
-        strcat(dot, "\t");
-        sprintf(nodo, "C%d", column->indice);
-        strcat(dot, nodo);
-        strcat(dot, " -> ");
-        escribir("matriz.dot", dot, "a");
+        char nodo[10];
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
-            strcpy(dot, nodo);
-            strcat(dot, ";\n\t");
-            strcat(dot, nodo);
-            strcat(dot, "[label=\"");
-            strcat(dot, actual->dato);
-            strcat(dot, "\"];\n");
-            if (actual->abajo != NULL)
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
             {
-                strcat(dot, "\t");
+                sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
+                strcpy(dot, nodo);
+                strcat(dot, ";\n\t");
                 strcat(dot, nodo);
-                strcat(dot, " -> ");
+                strcat(dot, "[label=\"");
+                strcat(dot, aux->dato);
+                strcat(dot, "\"");
+
+                strcat(dot, ", color=");
+                if (aux->color == 0)
+                    strcat(dot, "gray75");
+                else
+                    strcat(dot, "gray25");
+                strcat(dot, "];\n\t");
+
+                if (buscarNivel(actual->abajo, nivel) != NULL)
+                {
+                    strcat(dot, nodo);
+                    strcat(dot, " -> ");
+                }
+
+                escribir(titulo, dot, "a");
             }
 
             actual = actual->abajo;
-            strcpy(nodo, "");
-
-            escribir("matriz.dot", dot, "a");
         }
         column = column->siguiente;
     }
 }
 
-void Matriz::graficarFilas(int nivel)
+void Matriz::graficarFilas(char *titulo, int nivel)
 {
-    char dot[256];
-    char nodo[10];
+    char dot[100];
+    Encabezado *fila = filas->primero;
 
-    Encabezado *row = filas->primero;
-    while (row != NULL)
+    while (fila != NULL)
     {
-        NodoMatriz *actual = row->apunta;
-
-        strcpy(dot, "\n\t");
-        sprintf(nodo, "F%d", row->indice);
-        strcat(dot, nodo);
-        strcat(dot, "[label=\"");
-        sprintf(nodo, "%d", row->indice);
-        strcat(dot, nodo);
-        strcat(dot, "\"];\n");
-        strcat(dot, "\t");
-        sprintf(nodo, "F%d", row->indice);
-        strcat(dot, nodo);
-        strcat(dot, " -> ");
-        escribir("matriz.dot", dot, "a");
+        NodoMatriz *actual = fila->apunta;
+        char nodo[15];
 
         while (actual != NULL)
         {
-            sprintf(nodo, "nd%d%d%d", actual->y, actual->x, actual->nivel);
-            strcpy(dot, nodo);
-            strcat(dot, ";\n");
-
-            if (actual->derecha != NULL)
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
             {
-                strcat(dot, "\t");
-                strcat(dot, nodo);
-                strcat(dot, " -> ");
+                sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
+                strcpy(dot, nodo);
+                strcat(dot, ";\n\t");
+
+                if (buscarNivel(actual->derecha, nivel) != NULL)
+                {
+                    strcat(dot, nodo);
+                    strcat(dot, " -> ");
+                }
+
+                escribir(titulo, dot, "a");
             }
 
             actual = actual->derecha;
-            strcpy(nodo, "");
-
-            escribir("matriz.dot", dot, "a");
         }
-        row = row->siguiente;
+        fila = fila->siguiente;
+    }
+}
+
+void Matriz::graficarEnlaceColumna(char *titulo, int nivel)
+{
+    char dot[75];
+    Encabezado *column = columnas->primero;
+    strcpy(dot, "MATRIZ");
+
+    while (column != NULL)
+    {
+        NodoMatriz *actual = column->apunta;
+        char col[3];
+
+        sprintf(col, "C%d", column->indice);
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                strcat(dot, " -> ");
+                strcat(dot, col);
+
+                escribir(titulo, dot, "a");
+                strcpy(dot, "");
+                break;
+            }
+
+            actual = actual->abajo;
+        }
+        column = column->siguiente;
+    }
+    strcpy(dot, ";\n\t");
+    escribir(titulo, dot, "a");
+}
+
+void Matriz::graficarEnlaceFila(char *titulo, int nivel)
+{
+    char dot[75];
+    Encabezado *fila = filas->primero;
+    strcpy(dot, "MATRIZ");
+
+    while (fila != NULL)
+    {
+        NodoMatriz *actual = fila->apunta;
+        char fil[3];
+
+        sprintf(fil, "F%d", fila->indice);
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                strcat(dot, " -> ");
+                strcat(dot, fil);
+
+                escribir(titulo, dot, "a");
+
+                strcpy(dot, "");
+                break;
+            }
+
+            actual = actual->derecha;
+        }
+        fila = fila->siguiente;
+    }
+    strcpy(dot, ";\n\t");
+    escribir(titulo, dot, "a");
+}
+
+void Matriz::graficarEnlaceColumnaNodo(char *titulo, int nivel)
+{
+    char dot[75];
+    Encabezado *column = columnas->primero;
+
+    while (column != NULL)
+    {
+        NodoMatriz *actual = column->apunta;
+        char nodo[10];
+        char col[3];
+
+        sprintf(col, "C%d", column->indice);
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
+                strcpy(dot, col);
+                strcat(dot, " -> ");
+                strcat(dot, nodo);
+                strcat(dot, ";\n\t");
+
+                escribir(titulo, dot, "a");
+                break;
+            }
+
+            actual = actual->abajo;
+        }
+        column = column->siguiente;
+    }
+}
+
+void Matriz::graficarEnlaceFilaNodo(char *titulo, int nivel)
+{
+    char dot[75];
+    Encabezado *fila = filas->primero;
+
+    while (fila != NULL)
+    {
+        NodoMatriz *actual = fila->apunta;
+        char nodo[15];
+        char fil[3];
+
+        sprintf(fil, "F%d", fila->indice);
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
+                strcpy(dot, fil);
+                strcat(dot, " -> ");
+                strcat(dot, nodo);
+                strcat(dot, ";\n\t");
+
+                escribir(titulo, dot, "a");
+                strcpy(dot, "");
+                break;
+            }
+
+            actual = actual->derecha;
+        }
+        fila = fila->siguiente;
+    }
+}
+
+void Matriz::setRank(char *titulo, int nivel)
+{
+    char dot[75];
+    Encabezado *encabezadoAux = columnas->primero;
+
+    strcpy(dot, "{ rank=same; MATRIZ; ");
+    escribir(titulo, dot, "a");
+
+    while (encabezadoAux != NULL)
+    {
+        NodoMatriz *actual = encabezadoAux->apunta;
+        char nodo[10];
+        char col[3];
+
+        sprintf(col, "C%d", encabezadoAux->indice);
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                strcpy(dot, col);
+                strcat(dot, "; ");
+
+                escribir(titulo, dot, "a");
+                break;
+            }
+
+            actual = actual->abajo;
+        }
+        encabezadoAux = encabezadoAux->siguiente;
+    }
+    strcpy(dot, "};\n\t");
+    escribir(titulo, dot, "a");
+
+    encabezadoAux = filas->primero;
+
+    while (encabezadoAux != NULL)
+    {
+        NodoMatriz *actual = encabezadoAux->apunta;
+        char nodo[15];
+        char fil[3];
+
+        sprintf(fil, "F%d", encabezadoAux->indice);
+        strcpy(dot, "{ rank=same; ");
+        strcat(dot, fil);
+        strcat(dot, "; ");
+
+        while (actual != NULL)
+        {
+            NodoMatriz *aux = buscarNivel(actual, nivel);
+            if (aux != NULL)
+            {
+                sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
+                strcat(dot, nodo);
+                strcat(dot, "; ");
+
+                escribir(titulo, dot, "a");
+                strcpy(dot, "");
+            }
+
+            actual = actual->derecha;
+        }
+        strcpy(dot, "};\n\t");
+        escribir(titulo, dot, "a");
+
+        encabezadoAux = encabezadoAux->siguiente;
     }
 }
 
 void Matriz::graficar(int nivel)
 {
-    char dot[128];
-    char nodo[5];
-    Encabezado *encabezado;
+    char dot[120];
+    char tituloGrafica[10];
+    char cmd[100];
+    char filename[15];
+
+    sprintf(tituloGrafica, "Matriz_%d", nivel);
+    strcpy(filename, tituloGrafica);
+    strcat(filename, ".dot");
+    printf("%s", tituloGrafica);
+    printf("%s", filename);
 
     /***********************************
      * CREAR ENCABEZADO DOT
@@ -624,55 +992,46 @@ void Matriz::graficar(int nivel)
     strcat(dot, "\tedge[color=black];\n");
     strcat(dot, "\trankdir=UD;\n");
 
-    escribir("matriz.dot", dot, "w");
-
-    /* { rank=same; Listar filas } */
-    rank(nivel);
+    escribir(filename, dot, "w");
 
     /***********************************
      * LISTAR COLUMNAS
     ***********************************/
-    graficarColumnas(nivel);
+    graficarColumnas(filename, nivel);
+    escribir(filename, "\n\t", "a");
 
     /***********************************
      * LISTAR FILAS
     ***********************************/
-    graficarFilas(nivel);
+    graficarFilas(filename, nivel);
+    escribir(filename, "\n\t", "a");
 
     /***********************************
-     * ENLAZAR COLUMNAS
+     * ENLAZAR COLUMNAS Y FILAS
     ***********************************/
-    encabezado = columnas->primero;
-    strcpy(dot, "\tMATRIZ -> ");
-    while (encabezado != NULL)
-    {
-        sprintf(nodo, "C%d", encabezado->indice);
-        strcat(dot, nodo);
-        if (encabezado->siguiente != NULL)
-            strcat(dot, " -> ");
-        encabezado = encabezado->siguiente;
-    }
-    strcat(dot, ";\n");
-    escribir("matriz.dot", dot, "a");
+    graficarEnlaceColumnaNodo(filename, nivel);
+    escribir(filename, "\n\t", "a");
+    graficarEnlaceFilaNodo(filename, nivel);
+    escribir(filename, "\n\t", "a");
+
+    graficarEnlaceColumna(filename, nivel);
+    escribir(filename, "\n\t", "a");
+    graficarEnlaceFila(filename, nivel);
+    escribir(filename, "\n\t", "a");
 
     /***********************************
-     * ENLAZAR FILAS
+     * ALINEAR FILAS
     ***********************************/
-    encabezado = filas->primero;
-    strcpy(dot, "\tMATRIZ -> ");
-    while (encabezado != NULL)
-    {
-        sprintf(nodo, "F%d", encabezado->indice);
-        strcat(dot, nodo);
-        if (encabezado->siguiente != NULL)
-            strcat(dot, " -> ");
-        encabezado = encabezado->siguiente;
-    }
-    strcat(dot, ";\n");
-    escribir("matriz.dot", dot, "a");
+    setRank(filename, nivel);
 
-    strcpy(dot, "}");
-    escribir("matriz.dot", dot, "a");
+    strcpy(dot, "\n}");
+    escribir(filename, dot, "a");
 
-    system("dot -Tpng /home/marco/Escritorio/matriz.dot -o /home/marco/Escritorio/matriz.png");
+    strcpy(cmd, "dot -Tpng /home/marco/Escritorio/");
+    strcat(cmd, filename);
+    strcat(cmd, " -o /home/marco/Escritorio/");
+    strcat(cmd, tituloGrafica);
+    strcat(cmd, ".png");
+    system(cmd);
 }
+

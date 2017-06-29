@@ -205,7 +205,11 @@ void Principal::on_actionGraficar_triggered()
 
 void Principal::on_actionGraficar_Matriz_triggered()
 {
-    matriz->graficar(0);
+    int nivel = QInputDialog::getInt(
+                this,
+                "Seleccion de nivel",
+                "Ingresar el nivel de matriz");
+    matriz->graficar(nivel);
     system("./home/marco/Escritorio/matriz.png");
 }
 
@@ -221,17 +225,25 @@ void Principal::on_actionEliminar_triggered()
     */
     QString dato = QInputDialog::getText(
                 this,
-                "Buscar nodo",
+                "Mover nodo",
                 "Nombre de pieza");
     int color = QInputDialog::getInt(
                 this,
-                "Buscar nodo",
+                "Mover nodo",
                 "Color de pieza");
     int nivel = QInputDialog::getInt(
                 this,
-                "Buscar nodo",
+                "Mover nodo",
                 "Nivel de pieza");
-    matriz->mover(dato.toLatin1().data(), color, nivel);
+    int fila = QInputDialog::getInt(
+                this,
+                "Mover nodo",
+                "Fila destino");
+    int col = QInputDialog::getInt(
+                this,
+                "Mover nodo",
+                "Columna destino");
+    matriz->mover(dato.toLatin1().data(), color, nivel, fila, col);
 }
 
 void Principal::on_actionAgregar_triggered()
@@ -267,6 +279,18 @@ void Principal::on_btnMover1_clicked()
 
 void Principal::on_actionJugar_triggered()
 {
+    matriz->graficar(0);
+    matriz->graficar(1);
+    matriz->graficar(2);
+
+    QImage m;
+    m.load("/home/marco/Escritorio/Matriz_0");
+    ui->lblNivel0->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel0->width(), ui->lblNivel0->height(), Qt::KeepAspectRatio));
+    m.load("/home/marco/Escritorio/Matriz_1");
+    ui->lblNivel1->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel1->width(), ui->lblNivel1->height(), Qt::KeepAspectRatio));
+    m.load("/home/marco/Escritorio/Matriz_2");
+    ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
+
     turno = true;
     ui->fmeJugador1->setEnabled(turno);
 }

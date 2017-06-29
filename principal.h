@@ -48,12 +48,12 @@ private:
     QString lectura(QString filename);
     void separar(char* texto);
     void insertarMatriz();
-    char torre[6];
-    char alfil[6];
-    char caballo[8];
-    char reina[6];
-    char rey[4];
-    char peon[5];
+    char torre[2];
+    char alfil[2];
+    char caballo[2];
+    char reina[2];
+    char rey[2];
+    char peon[2];
     bool turno;
 };
 
