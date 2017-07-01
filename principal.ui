@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>768</height>
+    <height>718</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +37,7 @@
       <x>4</x>
       <y>6</y>
       <width>1361</width>
-      <height>701</height>
+      <height>651</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -51,8 +51,8 @@
          <rect>
           <x>0</x>
           <y>20</y>
-          <width>361</width>
-          <height>671</height>
+          <width>381</width>
+          <height>381</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -79,18 +79,18 @@
        </widget>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QGroupBox" name="grpNivel1">
+     <item row="0" column="2">
+      <widget class="QGroupBox" name="grpNivel2">
        <property name="title">
-        <string>Nivel 1</string>
+        <string>Nivel 2</string>
        </property>
-       <widget class="QLabel" name="lblNivel1">
+       <widget class="QLabel" name="lblNivel2">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>20</y>
-          <width>361</width>
-          <height>671</height>
+          <width>381</width>
+          <height>381</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -105,18 +105,18 @@
        </widget>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QGroupBox" name="grpNivel2">
+     <item row="0" column="1">
+      <widget class="QGroupBox" name="grpNivel1">
        <property name="title">
-        <string>Nivel 2</string>
+        <string>Nivel 1</string>
        </property>
-       <widget class="QLabel" name="lblNivel2">
+       <widget class="QLabel" name="lblNivel1">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>20</y>
-          <width>361</width>
-          <height>671</height>
+          <width>381</width>
+          <height>381</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -145,19 +145,19 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>3</x>
-          <y>26</y>
-          <width>241</width>
-          <height>671</height>
+          <x>0</x>
+          <y>30</y>
+          <width>171</width>
+          <height>611</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QGroupBox" name="groupBox">
+          <widget class="QGroupBox" name="grpJugadores">
            <property name="maximumSize">
             <size>
              <width>500</width>
-             <height>500</height>
+             <height>600</height>
             </size>
            </property>
            <property name="title">
@@ -167,7 +167,7 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>280</y>
+              <y>100</y>
               <width>161</width>
               <height>181</height>
              </rect>
@@ -191,7 +191,7 @@
               <item>
                <widget class="QLabel" name="lblUsuario1">
                 <property name="text">
-                 <string>Usuario</string>
+                 <string>Usuario 1 - Negras</string>
                 </property>
                </widget>
               </item>
@@ -226,7 +226,7 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>90</y>
+              <y>290</y>
               <width>161</width>
               <height>181</height>
              </rect>
@@ -250,7 +250,7 @@
               <item>
                <widget class="QLabel" name="lblUsuario2">
                 <property name="text">
-                 <string>Usuario</string>
+                 <string>Usuario 2 - Blancas</string>
                 </property>
                </widget>
               </item>
@@ -281,19 +281,35 @@
              </layout>
             </widget>
            </widget>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_2">
-           <property name="maximumSize">
-            <size>
-             <width>500</width>
-             <height>200</height>
-            </size>
-           </property>
-           <property name="title">
-            <string>Consola</string>
-           </property>
+           <widget class="QGroupBox" name="grpConsola">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>470</y>
+              <width>161</width>
+              <height>71</height>
+             </rect>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>500</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Consola</string>
+            </property>
+            <widget class="QLineEdit" name="edtConsola">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>30</y>
+               <width>151</width>
+               <height>29</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -337,6 +353,7 @@
      <addaction name="actionGraficar"/>
      <addaction name="actionAgregar"/>
      <addaction name="actionEliminar"/>
+     <addaction name="actionTop_10"/>
     </widget>
     <addaction name="menuMatriz"/>
     <addaction name="menuArbol"/>
@@ -398,6 +415,11 @@
   <action name="actionJugar">
    <property name="text">
     <string>Jugar</string>
+   </property>
+  </action>
+  <action name="actionTop_10">
+   <property name="text">
+    <string>Top 10</string>
    </property>
   </action>
  </widget>

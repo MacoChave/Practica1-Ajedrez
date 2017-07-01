@@ -179,6 +179,16 @@ void ABB::eliminarNodoConHijoDch(NodoArbol *actual)
     menor = NULL;
 }
 
+void ABB::top(Lista *lista, NodoArbol *nodo)
+{
+    if (nodo != NULL)
+    {
+        lista->agregar(nodo->usuario, nodo->victorias);
+        top(lista, nodo->izquierda);
+        top(lista, nodo->derecha);
+    }
+}
+
 /****************************************
  * ACCIONES PUBLICOS
 *****************************************/
@@ -328,4 +338,11 @@ void ABB::graficar()
     escribir("arbol.dot", "}", "a");
 
     system("dot -Tpng /home/marco/Escritorio/arbol.dot -o /home/marco/Escritorio/arbol.png");
+}
+
+void ABB::top()
+{
+    Lista *lista = new Lista();
+    top(lista, nodo);
+    lista->graficar();
 }

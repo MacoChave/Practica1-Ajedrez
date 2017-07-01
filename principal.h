@@ -43,6 +43,8 @@ private slots:
 
     void on_actionJugar_triggered();
 
+    void on_actionTop_10_triggered();
+
 private:
     Ui::Principal *ui;
     QString lectura(QString filename);

@@ -350,7 +350,7 @@ NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, char *dato, int color, int 
     return aux;
 }
 
-NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, int columna)
+NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, int columna, int nivel)
 {
     NodoMatriz *aux = nodo;
 
@@ -362,10 +362,17 @@ NodoMatriz *Encabezado::buscarNodo(NodoMatriz *nodo, int columna)
             break;
     }
 
-    if (aux->x == columna)
-        return aux;
-    else
-        return NULL;
+    if (aux != NULL && aux->x == columna)
+    {
+        while (aux != NULL)
+        {
+            if (aux->nivel == nivel)
+                return aux;
+            else
+                aux = aux->atras;
+        }
+    }
+    return aux;
 }
 
 /*****************************************************************************
@@ -479,7 +486,7 @@ NodoMatriz *ListaEncabezado::buscarNodoMatriz(char *dato, int color, int nivel)
     return aux;
 }
 
-NodoMatriz *ListaEncabezado::buscarNodoMatriz(int fila, int columna)
+NodoMatriz *ListaEncabezado::buscarNodoMatriz(int fila, int columna, int nivel)
 {
     Encabezado *filaAux = primero;
     NodoMatriz *aux = NULL;
@@ -492,7 +499,7 @@ NodoMatriz *ListaEncabezado::buscarNodoMatriz(int fila, int columna)
             break;
     }
     if (filaAux != NULL && filaAux->indice == fila)
-        aux = filaAux->buscarNodo(filaAux->apunta, columna);
+        aux = filaAux->buscarNodo(filaAux->apunta, columna, nivel);
 
     return aux;
 }
@@ -518,199 +525,147 @@ void Matriz::insertar(char *dato, int color, int y, int x, int nivel)
 /*****************************************************************************
  *  MOVER
 *****************************************************************************/
-bool Matriz::validarMovimiento(NodoMatriz *nodoOrigen, NodoMatriz *nodoDestino, int fila, int columna, int color)
+NodoMatriz *Matriz::validarMovimiento(NodoMatriz *nodoDestino, char *pieza, int y, int x, int color, int nivel)
 {
-    /*
-     * T - TORRE | C - CABALLO | A - ALFIL | D - DAMA | R - REY | P - PEON
-     * 0 - NEGRO
-     * 1 - BLANCO
-     * MOVER -> 0
-     * COMER -> 1
-    */
-    if (strcmp(nodoOrigen->dato, "T") == 0)
+    /***********************************
+     * PEON    : M(x, y - 1)
+     *           C(x - 1, y - 1)
+     * ALFIL   : M(x - i, y) || M(x, y - j)
+     *           M(x + i, y) || M(x, y - j)
+     * CABALLO : M(x - 2, y - 1) || M(x - 2, y + 1)
+     *           M(x + 2, y - 1) || M(x + 2, y + 1)
+     *           M(x - 1, y - 2) || M(x + 1, y - 2)
+     *           M(x - 1, y + 2) || M(x + 1, y + 2)
+     * TORRE   : M(x - i, y - j) || M(x - i, y + j)
+     *           M(x + i, y - j) || M(x + i, y + j)
+     * REY     : M(
+     * *********************************
+     * NEGRAS = 0
+     * BLANCAS = 1
+    ***********************************/
+    NodoMatriz *nodoOrigen;
+
+    if (strcmp(pieza, "T") == 0)
     {
-        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
-        {
-            if (nodoDestino != NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
     }
-    if (strcmp(nodoOrigen->dato, "C") == 0)
+    if (strcmp(pieza, "C") == 0)
     {
-        if (abs(fila - nodoOrigen->y) == 2 && abs(columna - nodoOrigen->x) == 1)
-        {
-            if (nodoDestino != NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
+        nodoOrigen = filas->buscarNodoMatriz(y + 2, x - 1, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y + 2, x + 1, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y - 2, x - 1, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y - 2, x + 1, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+
+        nodoOrigen = filas->buscarNodoMatriz(y - 1, x + 2, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y + 1, x + 2, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y - 1, x - 2, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+        nodoOrigen = filas->buscarNodoMatriz(y + 1, x - 2, nivel);
+        if (nodoOrigen != NULL)
+            return nodoOrigen;
+
+        return nodoOrigen;
     }
-    if (strcmp(nodoOrigen->dato, "A") == 0)
+    if (strcmp(pieza, "A") == 0)
     {
-        if (nodoOrigen->x == columna)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else if (nodoOrigen->y == fila)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else
-            return -1;
+
     }
-    if (strcmp(nodoOrigen->dato, "D") == 0)
+    if (strcmp(pieza, "D") == 0)
     {
-        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
-        {
-            if (nodoDestino != NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else if (nodoOrigen->x == columna)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else if (nodoOrigen->y == fila)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else
-            return -1;
     }
-    if (strcmp(nodoOrigen->dato, "R") == 0)
+    if (strcmp(pieza, "R") == 0)
     {
-        if (abs(fila - nodoOrigen->y) / abs(columna - nodoOrigen->x) == 1)
-        {
-            if (nodoDestino != NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else if (nodoOrigen->x == columna)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else if (nodoOrigen->y == fila)
-        {
-            if (nodoDestino == NULL)
-                return 0;
-            else if (nodoDestino->color != nodoOrigen->color)
-                return 1;
-            else
-                return -1;
-        }
-        else
-            return -1;
     }
-    if (strcmp(nodoOrigen->dato, "P") == 0)
+    if (strcmp(pieza, "P") == 0)
     {
-        if (nodoOrigen->color == 0)
+        if (color == 1)
         {
-            if (abs(fila - nodoOrigen->y) == 1 && columna == nodoOrigen->x)
-                return 0;
-            else if (nodoOrigen->y - fila == 1 && abs(nodoOrigen->x - columna) == 1)
-                if (nodoDestino != NULL && nodoDestino->color != nodoOrigen->color)
-                    return 1;
-                else
-                    return -1;
-            else
-                return -1;
+            nodoOrigen = filas->buscarNodoMatriz(y - 1, x, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            nodoOrigen = filas->buscarNodoMatriz(y + 1, x - 1, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            nodoOrigen = filas->buscarNodoMatriz(y + 1, x + 1, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            return nodoOrigen;
         }
         else
         {
-            if (abs(nodoOrigen->y - fila) == 1 && columna == nodoOrigen->x)
-                return 0;
-            else if (fila - nodoOrigen->y == 1 && abs(nodoOrigen->x - columna) == 1)
-            {
-                if (nodoDestino != NULL && nodoDestino->color != nodoOrigen->color)
-                    return 1;
-                else
-                    return -1;
-            }
-            else
-                return -1;
+            nodoOrigen = filas->buscarNodoMatriz(y + 1, x, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            nodoOrigen = filas->buscarNodoMatriz(y - 1, x - 1, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            nodoOrigen = filas->buscarNodoMatriz(y - 1, x + 1, nivel);
+            if (nodoOrigen != NULL)
+                return nodoOrigen;
+
+            return nodoOrigen;
         }
     }
 }
 
 bool Matriz::mover(char dato[1], int color, int nivel, int fila, int columna)
 {
-    bool exito = false;
-    NodoMatriz *nodoOrigen = filas->buscarNodoMatriz(dato, color, nivel);
-    NodoMatriz *nodoDestino = filas->buscarNodoMatriz(fila, columna);
+    NodoMatriz *nodoOrigen;
+    NodoMatriz *nodoDestino = filas->buscarNodoMatriz(fila, columna, nivel);
+    nodoOrigen = validarMovimiento(nodoDestino, dato, fila, columna, color, nivel);
+
     if (nodoOrigen != NULL)
     {
-        switch (validarMovimiento(nodoOrigen, nodoDestino, fila, columna, color)) {
-        case 0: //MOVER
+        if (nodoDestino != NULL)
+        {
+            /* COMER */
             filas->eliminarFila(nodoOrigen);
             columnas->eliminarColumna(nodoOrigen);
-
-            delete(nodoOrigen);
-            nodoOrigen = NULL;
-
-            insertar(dato, color, fila, columna, nivel);
-
-            exito = true;
-            break;
-        case 1: //COMER
-            filas->eliminarFila(nodoOrigen);
-            columnas->eliminarColumna(nodoOrigen);
-
-            delete(nodoOrigen);
-            nodoOrigen = NULL;
-
             filas->eliminarFila(nodoDestino);
             columnas->eliminarColumna(nodoDestino);
 
-            delete(nodoDestino);
-            nodoDestino = NULL;
             insertar(dato, color, fila, columna, nivel);
 
-            exito = true;
-            break;
-        default:
-            exito = false;
-            break;
+            delete(nodoOrigen);
+            nodoOrigen = NULL;
+            delete(nodoDestino);
+            nodoDestino = NULL;
+
+            return true;
+        }
+        else
+        {
+            /* MOVER */
+            filas->eliminarFila(nodoOrigen);
+            columnas->eliminarColumna(nodoOrigen);
+
+            insertar(dato, color, fila, columna, nivel);
+
+            delete(nodoOrigen);
+            nodoOrigen = NULL;
+
+            return true;
         }
     }
-
-    return exito;
+    else
+        return false;
 }
 
 /****************************************************************************
@@ -1100,6 +1055,7 @@ void Matriz::setRank(char *titulo, int nivel)
         NodoMatriz *actual = encabezadoAux->apunta;
         char nodo[15];
         char fil[3];
+        bool esFila = false;
 
         sprintf(fil, "F%d", encabezadoAux->indice);
         strcpy(dot, "{ rank=same; ");
@@ -1111,6 +1067,8 @@ void Matriz::setRank(char *titulo, int nivel)
             NodoMatriz *aux = buscarNivel(actual, nivel);
             if (aux != NULL)
             {
+                esFila = true;
+
                 sprintf(nodo, "nd%d%d%d", aux->y, aux->x, aux->nivel);
                 strcat(dot, nodo);
                 strcat(dot, "; ");
@@ -1121,8 +1079,12 @@ void Matriz::setRank(char *titulo, int nivel)
 
             actual = actual->derecha;
         }
-        strcpy(dot, "};\n\t");
-        escribir(titulo, dot, "a");
+        if (esFila)
+        {
+            strcpy(dot, "};\n\t");
+            escribir(titulo, dot, "a");
+            esFila = false;
+        }
 
         encabezadoAux = encabezadoAux->siguiente;
     }

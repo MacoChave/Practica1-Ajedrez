@@ -194,15 +194,7 @@ void Principal::on_actionAgregar_triggered()
                 this,
                 "Agregar usuario",
                 "Ingresar nombre de usuario");
-    int victorias = QInputDialog::getInt(
-                this,
-                "Agregar usuario",
-                "Ingresar número de victorias del usuario");
-    int derrotas = QInputDialog::getInt(
-                this,
-                "Agregar usuario",
-                "Ingresar número de derrotas del usuario");
-    arbol->insertar(usuario.toLatin1().data(), victorias, derrotas);
+    arbol->insertar(usuario.toLatin1().data(), 0, 0);
 }
 
 void Principal::on_actionEliminar_triggered()
@@ -210,7 +202,7 @@ void Principal::on_actionEliminar_triggered()
     QString usuario = QInputDialog::getText(
                 this,
                 "Eliminar usuario",
-                "Ingresar usuario a eliminar");
+                "Ingresar nombre de usuario");
 
     arbol->eliminar(usuario.toLatin1().data());
 }
@@ -299,6 +291,7 @@ void Principal::on_btnMover2_clicked()
         turno = !turno;
         ui->fmeJugador2->setEnabled(!turno);
         ui->fmeJugador1->setEnabled(turno);
+        ui->edtConsola->setText(ui->edtMovimiento2->text());
         ui->edtMovimiento2->setText("");
 
         matriz->graficar(0);
@@ -313,6 +306,8 @@ void Principal::on_btnMover2_clicked()
         m.load("/home/marco/Escritorio/Matriz_2");
         ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
     }
+    else
+        ui->edtConsola->setText("Movimiento inválido");
 }
 
 void Principal::on_btnMover1_clicked()
@@ -337,6 +332,8 @@ void Principal::on_btnMover1_clicked()
         turno = !turno;
         ui->fmeJugador1->setEnabled(turno);
         ui->fmeJugador2->setEnabled(!turno);
+
+        ui->edtConsola->setText(ui->edtMovimiento1->text());
         ui->edtMovimiento1->setText("");
 
         matriz->graficar(0);
@@ -351,23 +348,52 @@ void Principal::on_btnMover1_clicked()
         m.load("/home/marco/Escritorio/Matriz_2");
         ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
     }
-
+    else
+        ui->edtConsola->setText("Movimiento inválido");
 }
 
 void Principal::on_actionJugar_triggered()
 {
-    matriz->graficar(0);
-    matriz->graficar(1);
-    matriz->graficar(2);
+    QString usuarioA = QInputDialog::getText(
+                this,
+                "Usuario 1",
+                "Ingresar usuario 1");
+    QString usuarioB = QInputDialog::getText(
+                this,
+                "Usuario 2",
+                "Ingresar usuario 2");
+    bool a = false, b = false;
 
-    QImage m;
-    m.load("/home/marco/Escritorio/Matriz_0");
-    ui->lblNivel0->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel0->width(), ui->lblNivel0->height(), Qt::KeepAspectRatio));
-    m.load("/home/marco/Escritorio/Matriz_1");
-    ui->lblNivel1->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel1->width(), ui->lblNivel1->height(), Qt::KeepAspectRatio));
-    m.load("/home/marco/Escritorio/Matriz_2");
-    ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
+    if (arbol->buscar(usuarioA.toLatin1().data()))
+        a = true;
+    if (arbol->buscar(usuarioB.toLatin1().data()))
+        b = true;
 
-    turno = true;
-    ui->fmeJugador1->setEnabled(turno);
+    if (a && b)
+    {
+        ui->edtConsola->setText("Usuarios válidos");
+        matriz->graficar(0);
+        matriz->graficar(1);
+        matriz->graficar(2);
+
+        QImage m;
+        m.load("/home/marco/Escritorio/Matriz_0");
+        ui->lblNivel0->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel0->width(), ui->lblNivel0->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_1");
+        ui->lblNivel1->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel1->width(), ui->lblNivel1->height(), Qt::KeepAspectRatio));
+        m.load("/home/marco/Escritorio/Matriz_2");
+        ui->lblNivel2->setPixmap(QPixmap::fromImage(m).scaled(ui->lblNivel2->width(), ui->lblNivel2->height(), Qt::KeepAspectRatio));
+
+        ui->lblUser1->setText(usuarioA);
+        ui->lblUser2->setText(usuarioB);
+        turno = true;
+        ui->fmeJugador1->setEnabled(turno);
+    }
+    else
+        ui->edtConsola->setText("Usuarios no válidos.");
+}
+
+void Principal::on_actionTop_10_triggered()
+{
+    arbol->top();
 }

@@ -15,10 +15,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         principal.cpp \
     matriz.cpp \
-    abb.cpp
+    abb.cpp \
+    lista.cpp
 
 HEADERS  += principal.h \
     matriz.h \
     abb.h \
+    lista.h
 
 FORMS    += principal.ui

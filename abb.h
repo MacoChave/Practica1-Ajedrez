@@ -1,5 +1,6 @@
 #ifndef ABB_H
 #define ABB_H
+#include "lista.h"
 
 class NodoArbol
 {
@@ -25,6 +26,7 @@ class ABB
     void eliminarNodoHoja(NodoArbol *actual);
     void eliminarNodoConHijoIzq(NodoArbol *actual);
     void eliminarNodoConHijoDch(NodoArbol *actual);
+    void top(Lista *lista, NodoArbol *nodo);
 public:
     ABB();
     ~ABB();
@@ -34,6 +36,7 @@ public:
     void eliminar(char *usuario_);
     NodoArbol *buscar(char *usuario);
     void graficar();
+    void top();
 };
 
 #endif // ABB_H
