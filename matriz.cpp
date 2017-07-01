@@ -540,87 +540,347 @@ NodoMatriz *Matriz::validarMovimiento(NodoMatriz *nodoDestino, char *pieza, int 
      *           M(x + i, y - j) || M(x + i, y + j)
      * REY     : M(
      * *********************************
-     * NEGRAS = 0
-     * BLANCAS = 1
+     * NEGRAS = 1
+     * BLANCAS = 0
     ***********************************/
     NodoMatriz *nodoOrigen;
 
     if (strcmp(pieza, "T") == 0)
     {
+        /* DIAGONAL */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        return NULL;
     }
     if (strcmp(pieza, "C") == 0)
     {
+        /* EN L */
         nodoOrigen = filas->buscarNodoMatriz(y + 2, x - 1, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y + 2, x + 1, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y - 2, x - 1, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y - 2, x + 1, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
 
         nodoOrigen = filas->buscarNodoMatriz(y - 1, x + 2, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y + 1, x + 2, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y - 1, x - 2, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
         nodoOrigen = filas->buscarNodoMatriz(y + 1, x - 2, nivel);
-        if (nodoOrigen != NULL)
+        if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
             return nodoOrigen;
 
-        return nodoOrigen;
+        return NULL;
     }
     if (strcmp(pieza, "A") == 0)
     {
-
+        /* LINEAS RECTAS */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        return NULL;
     }
     if (strcmp(pieza, "D") == 0)
     {
+        /* DIAGONAL */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+
+        /* EN LINEA RECTA */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+            }
+        }
+        return NULL;
     }
     if (strcmp(pieza, "R") == 0)
     {
+        /* DIAGONAL */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+
+        /* EN LINEA RECTA */
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y - i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y + i, x, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x - i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        for (int i = 1; i <= 8; i++)
+        {
+            nodoOrigen = filas->buscarNodoMatriz(y, x + i, nivel);
+            if (nodoOrigen != NULL)
+            {
+                if (nodoOrigen->color == color && strcmp(nodoOrigen->dato, pieza) == 0)
+                    return nodoOrigen;
+                else
+                    break;
+            }
+        }
+        return NULL;
     }
     if (strcmp(pieza, "P") == 0)
     {
         if (color == 1)
         {
             nodoOrigen = filas->buscarNodoMatriz(y - 1, x, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
             nodoOrigen = filas->buscarNodoMatriz(y + 1, x - 1, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
             nodoOrigen = filas->buscarNodoMatriz(y + 1, x + 1, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
-            return nodoOrigen;
+            return NULL;
         }
         else
         {
             nodoOrigen = filas->buscarNodoMatriz(y + 1, x, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
             nodoOrigen = filas->buscarNodoMatriz(y - 1, x - 1, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
             nodoOrigen = filas->buscarNodoMatriz(y - 1, x + 1, nivel);
-            if (nodoOrigen != NULL)
+            if (nodoOrigen != NULL && strcmp(nodoOrigen->dato, pieza) == 0 && nodoOrigen->color == color)
                 return nodoOrigen;
 
-            return nodoOrigen;
+            return NULL;
         }
     }
 }
@@ -633,33 +893,33 @@ bool Matriz::mover(char dato[1], int color, int nivel, int fila, int columna)
 
     if (nodoOrigen != NULL)
     {
-        if (nodoDestino != NULL)
+        if (nodoDestino != NULL && nodoOrigen->color != nodoDestino->color)
         {
             /* COMER */
             filas->eliminarFila(nodoOrigen);
             columnas->eliminarColumna(nodoOrigen);
-            filas->eliminarFila(nodoDestino);
-            columnas->eliminarColumna(nodoDestino);
-
-            insertar(dato, color, fila, columna, nivel);
-
             delete(nodoOrigen);
             nodoOrigen = NULL;
+
+            filas->eliminarFila(nodoDestino);
+            columnas->eliminarColumna(nodoDestino);
             delete(nodoDestino);
             nodoDestino = NULL;
 
+            insertar(dato, color, fila, columna, nivel);
+
             return true;
         }
-        else
+        else if (nodoDestino == NULL)
         {
             /* MOVER */
             filas->eliminarFila(nodoOrigen);
             columnas->eliminarColumna(nodoOrigen);
 
-            insertar(dato, color, fila, columna, nivel);
-
             delete(nodoOrigen);
             nodoOrigen = NULL;
+
+            insertar(dato, color, fila, columna, nivel);
 
             return true;
         }
